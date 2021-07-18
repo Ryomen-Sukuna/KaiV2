@@ -1,3 +1,8 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Repo Size](https://img.shields.io/github/repo-size/Ryomen-Sukuna/KaiV2)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
+[![Stars](https://img.shields.io/github/stars/Ryomen-Sukuna/KaiV2?style=social)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
+[![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
+
 # tgbot
 A modular telegram Python bot running on python3 with an sqlalchemy database.
 
