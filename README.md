@@ -3,34 +3,13 @@
 [![Stars](https://img.shields.io/github/stars/Ryomen-Sukuna/KaiV2?style=social)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
 [![Maintained](https://img.shields.io/badge/Maintained-Yes-brightgreen)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
 
-# tgbot
+# Kai Robot
 A modular telegram Python bot running on python3 with an sqlalchemy database.
 
 Originally a simple group management bot with multiple admin features, it has evolved into becoming a basis for modular
 bots aiming to provide simple plugin expansion via a simple drag and drop.
 
-Can be found on telegram as [Marie](https://t.me/BanhammerMarie_bot).
-
-For questions regarding creating your own bot, please head to [this chat](https://t.me/MarieOT) where you'll find a
-group of volunteers to help. We'll also help when a database schema changes, and some table column needs to be
-modified/added (this info can also be found in the commit messages)
-
-
-Join the [news channel](https://t.me/MarieNews) if you just want to stay in the loop about new features or
-announcements.
-
-Marie and I can also be found moderating the [marie support group](https://t.me/MarieSupport) aimed at providing help
-setting up Marie in your chats (*not* for bot clones).
-Feel free to join to report bugs, and stay in the loop on the status of the bot development.
-
-Note to maintainers that all schema changes will be found in the commit messages, and its their responsibility to read any new commits.
-
-
-## IMPORTANT NOTICE:
-
-This project is no longer under active maintenance. Occasional bug fixes may be released, but no new features are scheduled to be added.
-Users of [Marie](https://t.me/BanhammerMarie_bot) are encouraged to migrate to [Rose](https://t.me/MissRose_bot), which
-is the improved version of this project, written in golang, with scalability in mind.
+Can be found on telegram as [Kai](https://t.me/chisakikairobot).
 
 ## Starting the bot.
 
@@ -151,40 +130,3 @@ You should now be able to build your database URI. This will be:
 
 Replace sqldbtype with whichever db youre using (eg postgres, mysql, sqllite, etc)
 repeat for your username, password, hostname (localhost?), port (5432?), and db name.
-
-## Modules
-### Setting load order.
-
-The module load order can be changed via the `LOAD` and `NO_LOAD` configuration settings.
-These should both represent lists.
-
-If `LOAD` is an empty list, all modules in `modules/` will be selected for loading by default.
-
-If `NO_LOAD` is not present, or is an empty list, all modules selected for loading will be loaded.
-
-If a module is in both `LOAD` and `NO_LOAD`, the module will not be loaded - `NO_LOAD` takes priority.
-
-### Creating your own modules.
-
-Creating a module has been simplified as much as possible - but do not hesitate to suggest further simplification.
-
-All that is needed is that your .py file be in the modules folder.
-
-To add commands, make sure to import the dispatcher via
-
-`from tg_bot import dispatcher`.
-
-You can then add commands using the usual
-
-`dispatcher.add_handler()`.
-
-Assigning the `__help__` variable to a string describing this modules' available
-commands will allow the bot to load it and add the documentation for
-your module to the `/help` command. Setting the `__mod_name__` variable will also allow you to use a nicer, user
-friendly name for a module.
-
-The `__migrate__()` function is used for migrating chats - when a chat is upgraded to a supergroup, the ID changes, so 
-it is necessary to migrate it in the db.
-
-The `__stats__()` function is for retrieving module statistics, eg number of users, number of chats. This is accessed 
-through the `/stats` command, which is only available to the bot owner.

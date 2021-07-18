@@ -5,3 +5,4 @@ sqlalchemy
 python-telegram-bot==13.7
 psycopg2-binary
 feedparser
+spamwatch
