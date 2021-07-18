@@ -1,13 +1,16 @@
 import logging
 import os
 import sys
+import spamwatch
 
 import telegram.ext as tg
 
 # enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO)
+    handlers=[logging.FileHandler("log.txt"), logging.StreamHandler()],
+    level=logging.INFO,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,26 +23,23 @@ ENV = bool(os.environ.get('ENV', False))
 
 if ENV:
     TOKEN = os.environ.get('TOKEN', None)
+    
     try:
-        OWNER_ID = int(os.environ.get('OWNER_ID', None))
+        SUDO_USERS = (int(x) for x in os.environ.get("SUDO_USERS", "").split())
+        DEV_USERS = (int(x) for x in os.environ.get("DEV_USERS", "").split())
     except ValueError:
-        raise Exception("Your OWNER_ID env variable is not a valid integer.")
-
+        raise Exception("Your sudo or dev users list does not contain valid integers.")
+        
     MESSAGE_DUMP = os.environ.get('MESSAGE_DUMP', None)
     OWNER_USERNAME = os.environ.get("OWNER_USERNAME", None)
-
+    
     try:
-        SUDO_USERS = set(int(x) for x in os.environ.get("SUDO_USERS", "").split())
-    except ValueError:
-        raise Exception("Your sudo users list does not contain valid integers.")
-
-    try:
-        SUPPORT_USERS = set(int(x) for x in os.environ.get("SUPPORT_USERS", "").split())
+        SUPPORT_USERS = (int(x) for x in os.environ.get("SUPPORT_USERS", "").split())
     except ValueError:
         raise Exception("Your support users list does not contain valid integers.")
 
     try:
-        WHITELIST_USERS = set(int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
+        WHITELIST_USERS = (int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
     except ValueError:
         raise Exception("Your whitelisted users list does not contain valid integers.")
 
@@ -57,10 +57,13 @@ if ENV:
     WORKERS = int(os.environ.get('WORKERS', 8))
     BAN_STICKER = os.environ.get('BAN_STICKER', 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
+    SPAMWATCH_API = os.environ.get("SPAMWATCH_API", None)
 
 else:
     from tg_bot.config import Development as Config
-    TOKEN = Config.API_KEY
+    
+    TOKEN = Config.TOKEN
+    
     try:
         OWNER_ID = int(Config.OWNER_ID)
     except ValueError:
@@ -70,17 +73,19 @@ else:
     OWNER_USERNAME = Config.OWNER_USERNAME
 
     try:
-        SUDO_USERS = set(int(x) for x in Config.SUDO_USERS or [])
+        SUDO_USERS = (int(x) for x in Config.SUDO_USERS or [])
+        DEV_USERS = (int(x) for x in Config.DEV_USERS or [])
     except ValueError:
-        raise Exception("Your sudo users list does not contain valid integers.")
+        raise Exception("Your sudo or dev users list does not contain valid integers.")
+
 
     try:
-        SUPPORT_USERS = set(int(x) for x in Config.SUPPORT_USERS or [])
+        SUPPORT_USERS = (int(x) for x in Config.SUPPORT_USERS or [])
     except ValueError:
         raise Exception("Your support users list does not contain valid integers.")
 
     try:
-        WHITELIST_USERS = set(int(x) for x in Config.WHITELIST_USERS or [])
+        WHITELIST_USERS = (int(x) for x in Config.WHITELIST_USERS or [])
     except ValueError:
         raise Exception("Your whitelisted users list does not contain valid integers.")
 
@@ -98,13 +103,23 @@ else:
     WORKERS = Config.WORKERS
     BAN_STICKER = Config.BAN_STICKER
     ALLOW_EXCL = Config.ALLOW_EXCL
+    SPAMWATCH_API =Config.SPAMWATCH_API
 
 
 SUDO_USERS.add(OWNER_ID)
-SUDO_USERS.add(254318997)
+DEV_USERS.add(OWNER_ID)
+
+if not SPAMWATCH_API:
+    sw = None
+    LOGGER.warning("SpamWatch API key missing! recheck your config.")
+else:
+    try:
+        sw = spamwatch.Client(SPAMWATCH_API)
+    except:
+        sw = None
+        LOGGER.warning("Can't connect to SpamWatch!")
 
 updater = tg.Updater(TOKEN, workers=WORKERS)
-
 dispatcher = updater.dispatcher
 
 SUDO_USERS = list(SUDO_USERS)
