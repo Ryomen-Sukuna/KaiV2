@@ -63,7 +63,7 @@ UNGBAN_ERRORS = {
 
 @support_plus
 def gban(update: Update, context: CallbackContext):
-	bot, args = context.bot, context.args
+    bot, args = context.bot, context.args
     message = update.effective_message
     user = update.effective_user
     chat = update.effective_chat
