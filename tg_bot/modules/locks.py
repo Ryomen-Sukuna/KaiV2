@@ -2,7 +2,7 @@ import html
 from typing import Optional, List
 
 import telegram.ext as tg
-from telegram import Message, Chat, Update, Bot, ParseMode, User, MessageEntity
+from telegram import Message, Chat, ParseMode, MessageEntity
 from telegram import TelegramError
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, MessageHandler, Filters
@@ -12,8 +12,14 @@ from telegram.utils.helpers import mention_html
 import tg_bot.modules.sql.locks_sql as sql
 from tg_bot import dispatcher, SUDO_USERS, LOGGER
 from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.chat_status import can_delete, is_user_admin, user_not_admin, user_admin, \
-    bot_can_delete, is_bot_admin
+from tg_bot.modules.helper_funcs.chat_status import (
+    can_delete,
+    is_user_admin, 
+    user_not_admin, 
+    user_admin,
+    bot_can_delete, 
+    is_bot_admin,
+)    
 from tg_bot.modules.log_channel import loggable
 from tg_bot.modules.sql import users_sql
 
@@ -90,7 +96,6 @@ def unrestr_members(bot, chat_id, members, messages=True, media=True, other=True
             pass
 
 
-@run_async
 def locktypes(bot: Bot, update: Update):
     update.effective_message.reply_text("\n - ".join(["Locks: "] + list(LOCK_TYPES) + list(RESTRICTION_TYPES)))
 
@@ -136,7 +141,6 @@ def lock(bot: Bot, update: Update, args: List[str]) -> str:
     return ""
 
 
-@run_async
 @user_admin
 @loggable
 def unlock(bot: Bot, update: Update, args: List[str]) -> str:
@@ -189,7 +193,6 @@ def unlock(bot: Bot, update: Update, args: List[str]) -> str:
     return ""
 
 
-@run_async
 @user_not_admin
 def del_lockables(bot: Bot, update: Update):
     chat = update.effective_chat  # type: Optional[Chat]
@@ -220,7 +223,6 @@ def del_lockables(bot: Bot, update: Update):
             break
 
 
-@run_async
 @user_not_admin
 def rest_handler(bot: Bot, update: Update):
     msg = update.effective_message  # type: Optional[Message]
@@ -271,7 +273,6 @@ def build_lock_message(chat_id):
     return res
 
 
-@run_async
 @user_admin
 def list_locks(bot: Bot, update: Update):
     chat = update.effective_chat  # type: Optional[Chat]
@@ -307,14 +308,14 @@ Locking bots will stop non-admins from adding bots to the chat.
 __mod_name__ = "Locks"
 
 LOCKTYPES_HANDLER = DisableAbleCommandHandler("locktypes", locktypes)
-LOCK_HANDLER = CommandHandler("lock", lock, pass_args=True, filters=Filters.group)
-UNLOCK_HANDLER = CommandHandler("unlock", unlock, pass_args=True, filters=Filters.group)
-LOCKED_HANDLER = CommandHandler("locks", list_locks, filters=Filters.group)
+LOCK_HANDLER = CommandHandler("lock", lock, pass_args=True, filters=Filters.chat_type.groups)
+UNLOCK_HANDLER = CommandHandler("unlock", unlock, pass_args=True, filters=Filters.chat_type.groups)
+LOCKED_HANDLER = CommandHandler("locks", list_locks, filters=Filters.chat_type.groups)
 
 dispatcher.add_handler(LOCK_HANDLER)
 dispatcher.add_handler(UNLOCK_HANDLER)
 dispatcher.add_handler(LOCKTYPES_HANDLER)
 dispatcher.add_handler(LOCKED_HANDLER)
 
-dispatcher.add_handler(MessageHandler(Filters.all & Filters.group, del_lockables), PERM_GROUP)
-dispatcher.add_handler(MessageHandler(Filters.all & Filters.group, rest_handler), REST_GROUP)
+dispatcher.add_handler(MessageHandler(Filters.all & Filters.chat_type.groups, del_lockables), PERM_GROUP)
+dispatcher.add_handler(MessageHandler(Filters.all & Filters.chat_type.groups, rest_handler), REST_GROUP)

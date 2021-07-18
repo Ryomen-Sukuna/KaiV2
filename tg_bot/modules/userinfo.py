@@ -12,8 +12,7 @@ from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.extraction import extract_user
 
 
-@run_async
-def about_me(bot: Bot, update: Update, args: List[str]):
+def about_me(update: Update, args: List[str]):
     message = update.effective_message  # type: Optional[Message]
     user_id = extract_user(message, args)
 
@@ -34,8 +33,7 @@ def about_me(bot: Bot, update: Update, args: List[str]):
         update.effective_message.reply_text("You haven't set an info message about yourself yet!")
 
 
-@run_async
-def set_about_me(bot: Bot, update: Update):
+def set_about_me(update: Update):
     message = update.effective_message  # type: Optional[Message]
     user_id = message.from_user.id
     text = message.text
@@ -49,8 +47,7 @@ def set_about_me(bot: Bot, update: Update):
                 "Your info needs to be under {} characters! You have {}.".format(MAX_MESSAGE_LENGTH // 4, len(info[1])))
 
 
-@run_async
-def about_bio(bot: Bot, update: Update, args: List[str]):
+def about_bio(update: Update, args: List[str]):
     message = update.effective_message  # type: Optional[Message]
 
     user_id = extract_user(message, args)
@@ -71,8 +68,7 @@ def about_bio(bot: Bot, update: Update, args: List[str]):
         update.effective_message.reply_text("You haven't had a bio set about yourself yet!")
 
 
-@run_async
-def set_about_bio(bot: Bot, update: Update):
+def set_about_bio(update: Update):
     message = update.effective_message  # type: Optional[Message]
     sender = update.effective_user  # type: Optional[User]
     if message.reply_to_message:

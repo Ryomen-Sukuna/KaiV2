@@ -5,9 +5,9 @@ from datetime import datetime
 from typing import Optional, List
 
 import requests
-from telegram import Message, Chat, Update, Bot, MessageEntity
+from telegram import Message, Chat, Update, MessageEntity
 from telegram import ParseMode
-from telegram.ext import CommandHandler, run_async, Filters
+from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 
 from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, SUPPORT_USERS, WHITELIST_USERS, BAN_STICKER
@@ -134,13 +134,11 @@ GMAPS_LOC = "https://maps.googleapis.com/maps/api/geocode/json"
 GMAPS_TIME = "https://maps.googleapis.com/maps/api/timezone/json"
 
 
-@run_async
-def runs(bot: Bot, update: Update):
+def runs(update: Update):
     update.effective_message.reply_text(random.choice(RUN_STRINGS))
 
 
-@run_async
-def slap(bot: Bot, update: Update, args: List[str]):
+def slap(update: Update, args: List[str]):
     msg = update.effective_message  # type: Optional[Message]
 
     # reply to correct message
@@ -177,8 +175,7 @@ def slap(bot: Bot, update: Update, args: List[str]):
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
-def get_bot_ip(bot: Bot, update: Update):
+def get_bot_ip(update: Update):
     """ Sends the bot's IP address, so as to be able to ssh in if necessary.
         OWNER ONLY.
     """
@@ -186,8 +183,7 @@ def get_bot_ip(bot: Bot, update: Update):
     update.message.reply_text(res.text)
 
 
-@run_async
-def get_id(bot: Bot, update: Update, args: List[str]):
+def get_id(update: Update, args: List[str]):
     user_id = extract_user(update.effective_message, args)
     if user_id:
         if update.effective_message.reply_to_message and update.effective_message.reply_to_message.forward_from:
@@ -215,8 +211,7 @@ def get_id(bot: Bot, update: Update, args: List[str]):
                                                 parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
-def info(bot: Bot, update: Update, args: List[str]):
+def info(update: Update, args: List[str]):
     msg = update.effective_message  # type: Optional[Message]
     user_id = extract_user(update.effective_message, args)
 
@@ -270,8 +265,7 @@ def info(bot: Bot, update: Update, args: List[str]):
     update.effective_message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
-@run_async
-def get_time(bot: Bot, update: Update, args: List[str]):
+def get_time(update: Update, args: List[str]):
     location = " ".join(args)
     if location.lower() == bot.first_name.lower():
         update.effective_message.reply_text("Its always banhammer time for me!")
@@ -312,8 +306,7 @@ def get_time(bot: Bot, update: Update, args: List[str]):
                 update.message.reply_text("It's {} in {}".format(time_there, location))
 
 
-@run_async
-def echo(bot: Bot, update: Update):
+def echo(update: Update):
     args = update.effective_message.text.split(None, 1)
     message = update.effective_message
     if message.reply_to_message:
@@ -323,8 +316,7 @@ def echo(bot: Bot, update: Update):
     message.delete()
 
 
-@run_async
-def gdpr(bot: Bot, update: Update):
+def gdpr(update: Update):
     update.effective_message.reply_text("Deleting identifiable data...")
     for mod in GDPR:
         mod.__gdpr__(update.effective_user.id)
@@ -364,8 +356,7 @@ Keep in mind that your message <b>MUST</b> contain some text other than just a b
 """.format(dispatcher.bot.first_name)
 
 
-@run_async
-def markdown_help(bot: Bot, update: Update):
+def markdown_help(update: Update):
     update.effective_message.reply_text(MARKDOWN_HELP, parse_mode=ParseMode.HTML)
     update.effective_message.reply_text("Try forwarding the following message to me, and you'll see!")
     update.effective_message.reply_text("/save test This is a markdown test. _italics_, *bold*, `code`, "
@@ -373,8 +364,7 @@ def markdown_help(bot: Bot, update: Update):
                                         "[button2](buttonurl://google.com:same)")
 
 
-@run_async
-def stats(bot: Bot, update: Update):
+def stats(update: Update):
     update.effective_message.reply_text("Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS]))
 
 

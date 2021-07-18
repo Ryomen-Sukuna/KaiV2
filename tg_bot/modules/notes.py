@@ -3,7 +3,7 @@ from io import BytesIO
 from typing import Optional, List
 
 from telegram import MAX_MESSAGE_LENGTH, ParseMode, InlineKeyboardMarkup
-from telegram import Message, Update, Bot
+from telegram import ParseMode, Update,
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, RegexHandler
 from telegram.ext.dispatcher import run_async
@@ -31,7 +31,7 @@ ENUM_FUNC_MAP = {
 
 
 # Do not async
-def get(bot, update, notename, show_none=True, no_format=False):
+def get(update, notename, show_none=True, no_format=False):
     chat_id = update.effective_chat.id
     note = sql.get_note(chat_id, notename)
     message = update.effective_message  # type: Optional[Message]
@@ -110,7 +110,7 @@ def get(bot, update, notename, show_none=True, no_format=False):
 
 
 @run_async
-def cmd_get(bot: Bot, update: Update, args: List[str]):
+def cmd_get(update: Update, args: List[str]):
     if len(args) >= 2 and args[1].lower() == "noformat":
         get(bot, update, args[0], show_none=True, no_format=True)
     elif len(args) >= 1:
@@ -119,17 +119,15 @@ def cmd_get(bot: Bot, update: Update, args: List[str]):
         update.effective_message.reply_text("Get rekt")
 
 
-@run_async
-def hash_get(bot: Bot, update: Update):
+def hash_get(update: Update):
     message = update.effective_message.text
     fst_word = message.split()[0]
     no_hash = fst_word[1:]
     get(bot, update, no_hash, show_none=False)
 
 
-@run_async
 @user_admin
-def save(bot: Bot, update: Update):
+def save(update: Update):
     chat_id = update.effective_chat.id
     msg = update.effective_message  # type: Optional[Message]
 
@@ -161,9 +159,8 @@ def save(bot: Bot, update: Update):
         return
 
 
-@run_async
 @user_admin
-def clear(bot: Bot, update: Update, args: List[str]):
+def clear(update: Update, args: List[str]):
     chat_id = update.effective_chat.id
     if len(args) >= 1:
         notename = args[0]
@@ -174,8 +171,7 @@ def clear(bot: Bot, update: Update, args: List[str]):
             update.effective_message.reply_text("That's not a note in my database!")
 
 
-@run_async
-def list_notes(bot: Bot, update: Update):
+def list_notes(update: Update):
     chat_id = update.effective_chat.id
     note_list = sql.get_all_chat_notes(chat_id)
 

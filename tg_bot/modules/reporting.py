@@ -1,7 +1,7 @@
 import html
 from typing import Optional, List
 
-from telegram import Message, Chat, Update, Bot, User, ParseMode
+from telegram import Chat, Update, ParseMode
 from telegram.error import BadRequest, Unauthorized
 from telegram.ext import CommandHandler, RegexHandler, run_async, Filters
 from telegram.utils.helpers import mention_html
@@ -14,9 +14,8 @@ from tg_bot.modules.sql import reporting_sql as sql
 REPORT_GROUP = 5
 
 
-@run_async
 @user_admin
-def report_setting(bot: Bot, update: Update, args: List[str]):
+def report_setting(update: Update, args: List[str]):
     chat = update.effective_chat  # type: Optional[Chat]
     msg = update.effective_message  # type: Optional[Message]
 
@@ -48,10 +47,9 @@ def report_setting(bot: Bot, update: Update, args: List[str]):
                            parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
 @user_not_admin
 @loggable
-def report(bot: Bot, update: Update) -> str:
+def report(update: Update) -> str:
     message = update.effective_message  # type: Optional[Message]
     chat = update.effective_chat  # type: Optional[Chat]
     user = update.effective_user  # type: Optional[User]
@@ -133,7 +131,7 @@ NOTE: neither of these will get triggered if used by admins
    - If in chat, toggles that chat's status.
 """
 
-REPORT_HANDLER = CommandHandler("report", report, filters=Filters.group)
+REPORT_HANDLER = CommandHandler("report", report, filters=Filters.chat_type.groups)
 SETTING_HANDLER = CommandHandler("reports", report_setting, pass_args=True)
 ADMIN_REPORT_HANDLER = RegexHandler("(?i)@admin(s)?", report)
 

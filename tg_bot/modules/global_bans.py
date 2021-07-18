@@ -2,7 +2,7 @@ import html
 from io import BytesIO
 from typing import Optional, List
 
-from telegram import Message, Update, Bot, User, Chat, ParseMode
+from telegram import Message, Update, ParseMode
 from telegram.error import BadRequest, TelegramError
 from telegram.ext import run_async, CommandHandler, MessageHandler, Filters
 from telegram.utils.helpers import mention_html
@@ -44,8 +44,7 @@ UNGBAN_ERRORS = {
 }
 
 
-@run_async
-def gban(bot: Bot, update: Update, args: List[str]):
+def gban(update: Update, args: List[str]):
     message = update.effective_message  # type: Optional[Message]
 
     user_id, reason = extract_user_and_text(message, args)
@@ -128,8 +127,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
     message.reply_text("Person has been gbanned.")
 
 
-@run_async
-def ungban(bot: Bot, update: Update, args: List[str]):
+def ungban(update: Update, args: List[str]):
     message = update.effective_message  # type: Optional[Message]
 
     user_id = extract_user(message, args)
@@ -185,8 +183,7 @@ def ungban(bot: Bot, update: Update, args: List[str]):
     message.reply_text("Person has been un-gbanned.")
 
 
-@run_async
-def gbanlist(bot: Bot, update: Update):
+def gbanlist(update: Update):
     banned_users = sql.get_gban_list()
 
     if not banned_users:
@@ -212,7 +209,6 @@ def check_and_ban(update, user_id, should_message=True):
             update.effective_message.reply_text("This is a bad person, they shouldn't be here!")
 
 
-@run_async
 def enforce_gban(bot: Bot, update: Update):
     # Not using @restrict handler to avoid spamming - just ignore if cant gban.
     if sql.does_chat_gban(update.effective_chat.id) and update.effective_chat.get_member(bot.id).can_restrict_members:
@@ -234,7 +230,6 @@ def enforce_gban(bot: Bot, update: Update):
                 check_and_ban(update, user.id, should_message=False)
 
 
-@run_async
 @user_admin
 def gbanstat(bot: Bot, update: Update, args: List[str]):
     if len(args) > 0:
@@ -299,9 +294,9 @@ UNGBAN_HANDLER = CommandHandler("ungban", ungban, pass_args=True,
 GBAN_LIST = CommandHandler("gbanlist", gbanlist,
                            filters=CustomFilters.sudo_filter | CustomFilters.support_filter)
 
-GBAN_STATUS = CommandHandler("gbanstat", gbanstat, pass_args=True, filters=Filters.group)
+GBAN_STATUS = CommandHandler("gbanstat", gbanstat, pass_args=True, filters=Filters.chat_type.groups)
 
-GBAN_ENFORCER = MessageHandler(Filters.all & Filters.group, enforce_gban)
+GBAN_ENFORCER = MessageHandler(Filters.all & Filters.chat_type.groups, enforce_gban)
 
 dispatcher.add_handler(GBAN_HANDLER)
 dispatcher.add_handler(UNGBAN_HANDLER)

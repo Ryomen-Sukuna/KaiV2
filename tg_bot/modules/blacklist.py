@@ -2,9 +2,9 @@ import html
 import re
 from typing import Optional, List
 
-from telegram import Message, Chat, Update, Bot, ParseMode
+from telegram import Message, Update, ParseMode
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, MessageHandler, Filters, run_async
+from telegram.ext import CommandHandler, MessageHandler, Filters
 
 import tg_bot.modules.sql.blacklist_sql as sql
 from tg_bot import dispatcher, LOGGER
@@ -18,7 +18,6 @@ BLACKLIST_GROUP = 11
 BASE_BLACKLIST_STRING = "Current <b>blacklisted</b> words:\n"
 
 
-@run_async
 def blacklist(bot: Bot, update: Update, args: List[str]):
     msg = update.effective_message  # type: Optional[Message]
     chat = update.effective_chat  # type: Optional[Chat]
@@ -42,7 +41,6 @@ def blacklist(bot: Bot, update: Update, args: List[str]):
         msg.reply_text(text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 @user_admin
 def add_blacklist(bot: Bot, update: Update):
     msg = update.effective_message  # type: Optional[Message]
@@ -66,7 +64,6 @@ def add_blacklist(bot: Bot, update: Update):
         msg.reply_text("Tell me which words you would like to add to the blacklist.")
 
 
-@run_async
 @user_admin
 def unblacklist(bot: Bot, update: Update):
     msg = update.effective_message  # type: Optional[Message]
@@ -107,7 +104,6 @@ def unblacklist(bot: Bot, update: Update):
         msg.reply_text("Tell me which words you would like to remove from the blacklist.")
 
 
-@run_async
 @user_not_admin
 def del_blacklist(bot: Bot, update: Update):
     chat = update.effective_chat  # type: Optional[Chat]

@@ -1,7 +1,7 @@
 from typing import Union, List, Optional
 
 from future.utils import string_types
-from telegram import ParseMode, Update, Bot, Chat, User
+from telegram import ParseMode, Update,
 from telegram.ext import CommandHandler, RegexHandler, Filters
 from telegram.utils.helpers import escape_markdown
 
@@ -63,10 +63,9 @@ if is_module_loaded(FILENAME):
             chat = update.effective_chat
             return super().check_update(update) and not sql.is_command_disabled(chat.id, self.friendly)
 
-
-    @run_async
+            
     @user_admin
-    def disable(bot: Bot, update: Update, args: List[str]):
+    def disable(update: Update, args: List[str]):
         chat = update.effective_chat  # type: Optional[Chat]
         if len(args) >= 1:
             disable_cmd = args[0]
@@ -83,10 +82,9 @@ if is_module_loaded(FILENAME):
         else:
             update.effective_message.reply_text("What should I disable?")
 
-
-    @run_async
+            
     @user_admin
-    def enable(bot: Bot, update: Update, args: List[str]):
+    def enable(update: Update, args: List[str]):
         chat = update.effective_chat  # type: Optional[Chat]
         if len(args) >= 1:
             enable_cmd = args[0]
@@ -101,11 +99,10 @@ if is_module_loaded(FILENAME):
 
         else:
             update.effective_message.reply_text("What should I enable?")
-
-
-    @run_async
+            
+            
     @user_admin
-    def list_cmds(bot: Bot, update: Update):
+    def list_cmds(update: Update):
         if DISABLE_CMDS + DISABLE_OTHER:
             result = ""
             for cmd in set(DISABLE_CMDS + DISABLE_OTHER):
@@ -129,7 +126,7 @@ if is_module_loaded(FILENAME):
 
 
     @run_async
-    def commands(bot: Bot, update: Update):
+    def commands(update: Update):
         chat = update.effective_chat
         update.effective_message.reply_text(build_curr_disabled(chat.id), parse_mode=ParseMode.MARKDOWN)
 
@@ -157,10 +154,10 @@ if is_module_loaded(FILENAME):
  - /listcmds: list all possible toggleable commands
     """
 
-    DISABLE_HANDLER = CommandHandler("disable", disable, pass_args=True, filters=Filters.group)
-    ENABLE_HANDLER = CommandHandler("enable", enable, pass_args=True, filters=Filters.group)
-    COMMANDS_HANDLER = CommandHandler(["cmds", "disabled"], commands, filters=Filters.group)
-    TOGGLE_HANDLER = CommandHandler("listcmds", list_cmds, filters=Filters.group)
+    DISABLE_HANDLER = CommandHandler("disable", disable, pass_args=True, filters=Filters.chat_type.groups)
+    ENABLE_HANDLER = CommandHandler("enable", enable, pass_args=True, filters=Filters.chat_type.groups)
+    COMMANDS_HANDLER = CommandHandler(["cmds", "disabled"], commands, filters=Filters.chat_type.groups)
+    TOGGLE_HANDLER = CommandHandler("listcmds", list_cmds, filters=Filters.chat_type.groups)
 
     dispatcher.add_handler(DISABLE_HANDLER)
     dispatcher.add_handler(ENABLE_HANDLER)

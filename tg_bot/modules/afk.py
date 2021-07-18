@@ -1,11 +1,13 @@
 from typing import Optional
 
-from telegram import Message, Update, Bot, User
-from telegram import MessageEntity
-from telegram.ext import Filters, MessageHandler, run_async
+from telegram import MessageEntity, Update
+from telegram.ext import CallbackContext, Filters, MessageHandler
 
 from tg_bot import dispatcher
-from tg_bot.modules.disable import DisableAbleCommandHandler, DisableAbleRegexHandler
+from tg_bot.modules.disable import (
+    DisableAbleCommandHandler, 
+    DisableAbleRegexHandler,
+)       
 from tg_bot.modules.sql import afk_sql as sql
 from tg_bot.modules.users import get_user_id
 
@@ -13,8 +15,7 @@ AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
 
 
-@run_async
-def afk(bot: Bot, update: Update):
+def afk(update: Update, context: CallbackContext):
     args = update.effective_message.text.split(None, 1)
     if len(args) >= 2:
         reason = args[1]
@@ -25,8 +26,7 @@ def afk(bot: Bot, update: Update):
     update.effective_message.reply_text("{} is now AFK!".format(update.effective_user.first_name))
 
 
-@run_async
-def no_longer_afk(bot: Bot, update: Update):
+def no_longer_afk(update: Update, context: CallbackContext):
     user = update.effective_user  # type: Optional[User]
 
     if not user:  # ignore channels
@@ -37,8 +37,7 @@ def no_longer_afk(bot: Bot, update: Update):
         update.effective_message.reply_text("{} is no longer AFK!".format(update.effective_user.first_name))
 
 
-@run_async
-def reply_afk(bot: Bot, update: Update):
+def reply_afk(update: Update, context: CallbackContext):
     message = update.effective_message  # type: Optional[Message]
     entities = message.parse_entities([MessageEntity.TEXT_MENTION, MessageEntity.MENTION])
     if message.entities and entities:
