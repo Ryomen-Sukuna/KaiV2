@@ -13,7 +13,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install black
       - name: Run black
-        run: black SaitamaRobot
+        run: black tg_bot
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -22,7 +22,7 @@ jobs:
           body: Format code using black.
           labels: ⚫️ black
           branch: autofix
-          committer: ZERO<80420642+Ryomen-Sukuna@users.noreply.github.com>
+          committer: Ryomen-Sukuna<80420642+Ryomen-Sukuna@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           delete-branch: true

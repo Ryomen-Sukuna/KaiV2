@@ -1,23 +1,23 @@
 name: Format Python code
 on:
   push:
-    branches: [shiken]
+    branches: [Dev]
   pull_request:
-    branches: [shiken]
+    branches: [Dev]
 jobs:
   Autoyapf:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Auto yapf
-        uses: Accipiter7/yapf-action@master
+        uses: Ryomen-Sukuna/yapf-action@master
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@master
         with:
           commit-message: Automated code formatting.
-          committer: Accipiter7<Accipiter7@users.noreply.github.com>
+          committer: Ryomen-Sukuna<80420642+Ryomen-Sukuna@users.noreply.github.com>
           title: Automated code formatting.
           body: This is an automated code formatting pull request.
           labels: Code Formatting
-          reviewers: Accipiter7
+          reviewers: Ryomen-Sukuna
           branch: autofix
