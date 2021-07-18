@@ -75,22 +75,20 @@ def set_flood(update: Update, context: CallbackContext, args: List[str]) -> str:
                 sql.set_flood(chat.id, 0)
                 message.reply_text("Antiflood has been disabled.")
                 return "<b>{}:</b>" \
-                       "\n#SETFLOOD" \
-                       "\n<b>Admin:</b> {}" \
-                       "\nDisabled antiflood.".format(html.escape(chat.title), mention_html(user.id, user.first_name))
+                                   "\n#SETFLOOD" \
+                                   "\n<b>Admin:</b> {}" \
+                                   "\nDisabled antiflood.".format(html.escape(chat.title), mention_html(user.id, user.first_name))
 
-            elif amount < 3:
+            if amount < 3:
                 message.reply_text("Antiflood has to be either 0 (disabled), or a number bigger than 3!")
                 return ""
-
-            else:
-                sql.set_flood(chat.id, amount)
-                message.reply_text("Antiflood has been updated and set to {}".format(amount))
-                return "<b>{}:</b>" \
-                       "\n#SETFLOOD" \
-                       "\n<b>Admin:</b> {}" \
-                       "\nSet antiflood to <code>{}</code>.".format(html.escape(chat.title),
-                                                                    mention_html(user.id, user.first_name), amount)
+            sql.set_flood(chat.id, amount)
+            message.reply_text("Antiflood has been updated and set to {}".format(amount))
+            return "<b>{}:</b>" \
+                                   "\n#SETFLOOD" \
+                                   "\n<b>Admin:</b> {}" \
+                                   "\nSet antiflood to <code>{}</code>.".format(html.escape(chat.title),
+                                                                mention_html(user.id, user.first_name), amount)
 
         else:
             message.reply_text("Unrecognised argument - please use a number, 'off', or 'no'.")
@@ -117,8 +115,7 @@ def __chat_settings__(chat_id, user_id):
     limit = sql.get_flood_limit(chat_id)
     if limit == 0:
         return "*Not* currently enforcing flood control."
-    else:
-        return "Antiflood is set to `{}` messages.".format(limit)
+    return "Antiflood is set to `{}` messages.".format(limit)
 
 
 __help__ = """
