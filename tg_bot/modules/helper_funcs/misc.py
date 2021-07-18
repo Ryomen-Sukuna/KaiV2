@@ -74,7 +74,8 @@ def send_to_list(bot: Bot, send_to: list, message: str, markdown=False, html=Fal
     for user_id in set(send_to):
         try:
             if markdown:
-                bot.send_message(user_id, message, parse_mode=ParseMode.MARKDOWN)
+                bot.send_message(user_id, message,
+                                 parse_mode=ParseMode.MARKDOWN)
             elif html:
                 bot.send_message(user_id, message, parse_mode=ParseMode.HTML)
             else:

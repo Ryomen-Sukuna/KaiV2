@@ -45,7 +45,7 @@ def get_user_id(username):
 
     return None
 
-    
+
 def broadcast(bot: Bot, update: Update):
     to_send = update.effective_message.text.split(None, 1)
     if len(to_send) >= 2:
@@ -57,7 +57,8 @@ def broadcast(bot: Bot, update: Update):
                 sleep(0.1)
             except TelegramError:
                 failed += 1
-                LOGGER.warning("Couldn't send broadcast to %s, group name %s", str(chat.chat_id), str(chat.chat_name))
+                LOGGER.warning("Couldn't send broadcast to %s, group name %s", str(
+                    chat.chat_id), str(chat.chat_name))
 
         update.effective_message.reply_text("Broadcast complete. {} groups failed to receive the message, probably "
                                             "due to being kicked.".format(failed))
@@ -118,9 +119,11 @@ __help__ = ""  # no help string
 
 __mod_name__ = "Users"
 
-BROADCAST_HANDLER = CommandHandler("broadcast", broadcast, filters=Filters.user(OWNER_ID))
+BROADCAST_HANDLER = CommandHandler(
+    "broadcast", broadcast, filters=Filters.user(OWNER_ID))
 USER_HANDLER = MessageHandler(Filters.all & Filters.group, log_user)
-CHATLIST_HANDLER = CommandHandler("chatlist", chats, filters=CustomFilters.sudo_filter)
+CHATLIST_HANDLER = CommandHandler(
+    "chatlist", chats, filters=CustomFilters.sudo_filter)
 
 dispatcher.add_handler(USER_HANDLER, USERS_GROUP)
 dispatcher.add_handler(BROADCAST_HANDLER)

@@ -46,7 +46,8 @@ def get(update, notename, show_none=True, no_format=False):
         if note.is_reply:
             if MESSAGE_DUMP:
                 try:
-                    bot.forward_message(chat_id=chat_id, from_chat_id=MESSAGE_DUMP, message_id=note.value)
+                    bot.forward_message(
+                        chat_id=chat_id, from_chat_id=MESSAGE_DUMP, message_id=note.value)
                 except BadRequest as excp:
                     if excp.message == "Message to forward not found":
                         message.reply_text("This message seems to have been lost - I'll remove it "
@@ -56,7 +57,8 @@ def get(update, notename, show_none=True, no_format=False):
                         raise
             else:
                 try:
-                    bot.forward_message(chat_id=chat_id, from_chat_id=chat_id, message_id=note.value)
+                    bot.forward_message(
+                        chat_id=chat_id, from_chat_id=chat_id, message_id=note.value)
                 except BadRequest as excp:
                     if excp.message == "Message to forward not found":
                         message.reply_text("Looks like the original sender of this note has deleted "
@@ -102,7 +104,8 @@ def get(update, notename, show_none=True, no_format=False):
                 else:
                     message.reply_text("This note could not be sent, as it is incorrectly formatted. Ask in "
                                        "@MarieSupport if you can't figure out why!")
-                    LOGGER.exception("Could not parse message #%s in chat %s", notename, str(chat_id))
+                    LOGGER.exception(
+                        "Could not parse message #%s in chat %s", notename, str(chat_id))
                     LOGGER.warning("Message was: %s", str(note.value))
         return
     elif show_none:
@@ -136,11 +139,12 @@ def save(update: Update):
     if data_type is None:
         msg.reply_text("Dude, there's no note")
         return
-    
+
     if len(text.strip()) == 0:
         text = note_name
-        
-    sql.add_note_to_db(chat_id, note_name, text, data_type, buttons=buttons, file=content)
+
+    sql.add_note_to_db(chat_id, note_name, text, data_type,
+                       buttons=buttons, file=content)
 
     msg.reply_text(
         "Yas! Added {note_name}.\nGet it with /get {note_name}, or #{note_name}".format(note_name=note_name))
@@ -168,7 +172,8 @@ def clear(update: Update, args: List[str]):
         if sql.rm_note(chat_id, notename):
             update.effective_message.reply_text("Successfully removed note.")
         else:
-            update.effective_message.reply_text("That's not a note in my database!")
+            update.effective_message.reply_text(
+                "That's not a note in my database!")
 
 
 def list_notes(update: Update):
@@ -179,7 +184,8 @@ def list_notes(update: Update):
     for note in note_list:
         note_name = escape_markdown(" - {}\n".format(note.name))
         if len(msg) + len(note_name) > MAX_MESSAGE_LENGTH:
-            update.effective_message.reply_text(msg, parse_mode=ParseMode.MARKDOWN)
+            update.effective_message.reply_text(
+                msg, parse_mode=ParseMode.MARKDOWN)
             msg = ""
         msg += note_name
 
@@ -199,7 +205,8 @@ def __import_data__(chat_id, data):
             failures.append(notename)
             notedata = notedata[match.end():].strip()
             if notedata:
-                sql.add_note_to_db(chat_id, notename[1:], notedata, sql.Types.TEXT)
+                sql.add_note_to_db(
+                    chat_id, notename[1:], notedata, sql.Types.TEXT)
         else:
             sql.add_note_to_db(chat_id, notename[1:], notedata, sql.Types.TEXT)
 
@@ -249,7 +256,8 @@ HASH_GET_HANDLER = RegexHandler(r"^#[^\s]+", hash_get)
 SAVE_HANDLER = CommandHandler("save", save)
 DELETE_HANDLER = CommandHandler("clear", clear, pass_args=True)
 
-LIST_HANDLER = DisableAbleCommandHandler(["notes", "saved"], list_notes, admin_ok=True)
+LIST_HANDLER = DisableAbleCommandHandler(
+    ["notes", "saved"], list_notes, admin_ok=True)
 
 dispatcher.add_handler(GET_HANDLER)
 dispatcher.add_handler(SAVE_HANDLER)

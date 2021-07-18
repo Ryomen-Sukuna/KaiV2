@@ -188,7 +188,8 @@ def __load_chat_filters():
         for x in all_filters:
             CHAT_FILTERS[x.chat_id] += [x.keyword]
 
-        CHAT_FILTERS = {x: sorted(set(y), key=lambda i: (-len(i), i)) for x, y in CHAT_FILTERS.items()}
+        CHAT_FILTERS = {x: sorted(set(y), key=lambda i: (-len(i), i))
+                        for x, y in CHAT_FILTERS.items()}
 
     finally:
         SESSION.close()
@@ -196,7 +197,8 @@ def __load_chat_filters():
 
 def migrate_chat(old_chat_id, new_chat_id):
     with CUST_FILT_LOCK:
-        chat_filters = SESSION.query(CustomFilters).filter(CustomFilters.chat_id == str(old_chat_id)).all()
+        chat_filters = SESSION.query(CustomFilters).filter(
+            CustomFilters.chat_id == str(old_chat_id)).all()
         for filt in chat_filters:
             filt.chat_id = str(new_chat_id)
         SESSION.commit()
@@ -204,7 +206,8 @@ def migrate_chat(old_chat_id, new_chat_id):
         del CHAT_FILTERS[str(old_chat_id)]
 
         with BUTTON_LOCK:
-            chat_buttons = SESSION.query(Buttons).filter(Buttons.chat_id == str(old_chat_id)).all()
+            chat_buttons = SESSION.query(Buttons).filter(
+                Buttons.chat_id == str(old_chat_id)).all()
             for btn in chat_buttons:
                 btn.chat_id = str(new_chat_id)
             SESSION.commit()

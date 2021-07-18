@@ -27,7 +27,8 @@ def purge(update: Update, args: List[str]) -> str:
                 if new_del < delete_to:
                     delete_to = new_del
 
-            for m_id in range(delete_to, message_id - 1, -1):  # Reverse iteration over message ids
+            # Reverse iteration over message ids
+            for m_id in range(delete_to, message_id - 1, -1):
                 try:
                     bot.deleteMessage(chat.id, m_id)
                 except BadRequest as err:
@@ -53,11 +54,13 @@ def purge(update: Update, args: List[str]) -> str:
                    "\n#PURGE" \
                    "\n<b>Admin:</b> {}" \
                    "\nPurged <code>{}</code> messages.".format(html.escape(chat.title),
-                                                               mention_html(user.id, user.first_name),
+                                                               mention_html(
+                                                                   user.id, user.first_name),
                                                                delete_to - message_id)
 
     else:
-        msg.reply_text("Reply to a message to select where to start purging from.")
+        msg.reply_text(
+            "Reply to a message to select where to start purging from.")
 
     return ""
 
@@ -91,8 +94,10 @@ __help__ = """
 
 __mod_name__ = "Purges"
 
-DELETE_HANDLER = CommandHandler("del", del_message, filters=Filters.chat_type.groups)
-PURGE_HANDLER = CommandHandler("purge", purge, filters=Filters.chat_type.groups, pass_args=True)
+DELETE_HANDLER = CommandHandler(
+    "del", del_message, filters=Filters.chat_type.groups)
+PURGE_HANDLER = CommandHandler(
+    "purge", purge, filters=Filters.chat_type.groups, pass_args=True)
 
 dispatcher.add_handler(DELETE_HANDLER)
 dispatcher.add_handler(PURGE_HANDLER)

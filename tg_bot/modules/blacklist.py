@@ -48,7 +48,8 @@ def add_blacklist(bot: Bot, update: Update):
     words = msg.text.split(None, 1)
     if len(words) > 1:
         text = words[1]
-        to_blacklist = list(set(trigger.strip() for trigger in text.split("\n") if trigger.strip()))
+        to_blacklist = list(set(trigger.strip()
+                            for trigger in text.split("\n") if trigger.strip()))
         for trigger in to_blacklist:
             sql.add_to_blacklist(chat.id, trigger.lower())
 
@@ -61,7 +62,8 @@ def add_blacklist(bot: Bot, update: Update):
                 "Added <code>{}</code> triggers to the blacklist.".format(len(to_blacklist)), parse_mode=ParseMode.HTML)
 
     else:
-        msg.reply_text("Tell me which words you would like to add to the blacklist.")
+        msg.reply_text(
+            "Tell me which words you would like to add to the blacklist.")
 
 
 @user_admin
@@ -71,7 +73,8 @@ def unblacklist(bot: Bot, update: Update):
     words = msg.text.split(None, 1)
     if len(words) > 1:
         text = words[1]
-        to_unblacklist = list(set(trigger.strip() for trigger in text.split("\n") if trigger.strip()))
+        to_unblacklist = list(set(trigger.strip()
+                              for trigger in text.split("\n") if trigger.strip()))
         successful = 0
         for trigger in to_unblacklist:
             success = sql.rm_from_blacklist(chat.id, trigger.lower())
@@ -98,10 +101,12 @@ def unblacklist(bot: Bot, update: Update):
         else:
             msg.reply_text(
                 "Removed <code>{}</code> triggers from the blacklist. {} did not exist, "
-                "so were not removed.".format(successful, len(to_unblacklist) - successful),
+                "so were not removed.".format(
+                    successful, len(to_unblacklist) - successful),
                 parse_mode=ParseMode.HTML)
     else:
-        msg.reply_text("Tell me which words you would like to remove from the blacklist.")
+        msg.reply_text(
+            "Tell me which words you would like to remove from the blacklist.")
 
 
 @user_not_admin
@@ -160,8 +165,10 @@ multiple triggers at once.
 
 BLACKLIST_HANDLER = DisableAbleCommandHandler("blacklist", blacklist, filters=Filters.group, pass_args=True,
                                               admin_ok=True)
-ADD_BLACKLIST_HANDLER = CommandHandler("addblacklist", add_blacklist, filters=Filters.group)
-UNBLACKLIST_HANDLER = CommandHandler(["unblacklist", "rmblacklist"], unblacklist, filters=Filters.group)
+ADD_BLACKLIST_HANDLER = CommandHandler(
+    "addblacklist", add_blacklist, filters=Filters.group)
+UNBLACKLIST_HANDLER = CommandHandler(
+    ["unblacklist", "rmblacklist"], unblacklist, filters=Filters.group)
 BLACKLIST_DEL_HANDLER = MessageHandler(
     (Filters.text | Filters.command | Filters.sticker | Filters.photo) & Filters.group, del_blacklist, edited_updates=True)
 

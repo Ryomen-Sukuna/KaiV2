@@ -46,7 +46,8 @@ class ChatMembers(BASE):
                              onupdate="CASCADE",
                              ondelete="CASCADE"),
                   nullable=False)
-    __table_args__ = (UniqueConstraint('chat', 'user', name='_chat_members_uc'),)
+    __table_args__ = (UniqueConstraint(
+        'chat', 'user', name='_chat_members_uc'),)
 
     def __init__(self, chat, user):
         self.chat = chat
@@ -161,7 +162,8 @@ def migrate_chat(old_chat_id, new_chat_id):
 
         SESSION.flush()
 
-        chat_members = SESSION.query(ChatMembers).filter(ChatMembers.chat == str(old_chat_id)).all()
+        chat_members = SESSION.query(ChatMembers).filter(
+            ChatMembers.chat == str(old_chat_id)).all()
         for member in chat_members:
             member.chat = str(new_chat_id)
             SESSION.add(member)

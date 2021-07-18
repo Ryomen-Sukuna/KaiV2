@@ -50,7 +50,8 @@ def import_data(update, context):
                            "you're having issues with this, message @ironbloodnations with your backup file so the "
                            "issue can be debugged. My owners would be happy to help, and every bug "
                            "reported makes me better! Thanks! :)")
-            LOGGER.exception("Import for chatid %s with name %s failed.", str(chat.id), str(chat.title))
+            LOGGER.exception("Import for chatid %s with name %s failed.", str(
+                chat.id), str(chat.title))
             return
 
         # TODO: some of that link logic

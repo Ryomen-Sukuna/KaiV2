@@ -9,11 +9,11 @@ from telegram.utils.helpers import escape_markdown, mention_html
 from tg_bot import dispatcher
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.chat_status import (
-    bot_admin, 
-    can_promote, 
+    bot_admin,
+    can_promote,
     user_admin,
     can_pin,
-)    
+)
 from tg_bot.modules.helper_funcs.extraction import extract_user
 from tg_bot.modules.log_channel import loggable
 
@@ -35,11 +35,13 @@ def promote(update: Update, context: CallbackContext) -> str:
 
     user_member = chat.get_member(user_id)
     if user_member.status == 'administrator' or user_member.status == 'creator':
-        message.reply_text("How am I meant to promote someone that's already an admin?")
+        message.reply_text(
+            "How am I meant to promote someone that's already an admin?")
         return ""
 
     if user_id == bot.id:
-        message.reply_text("I can't promote myself! Get an admin to do it for me.")
+        message.reply_text(
+            "I can't promote myself! Get an admin to do it for me.")
         return ""
 
     # set same perms as bot - bot can't assign higher perms than itself!
@@ -80,7 +82,8 @@ def demote(update: Update, context: CallbackContext) -> str:
 
     user_member = chat.get_member(user_id)
     if user_member.status == 'creator':
-        message.reply_text("This person CREATED the chat, how would I demote them?")
+        message.reply_text(
+            "This person CREATED the chat, how would I demote them?")
         return ""
 
     if not user_member.status == 'administrator':
@@ -88,7 +91,8 @@ def demote(update: Update, context: CallbackContext) -> str:
         return ""
 
     if user_id == bot.id:
-        message.reply_text("I can't demote myself! Get an admin to do it for me.")
+        message.reply_text(
+            "I can't demote myself! Get an admin to do it for me.")
         return ""
 
     try:
@@ -106,7 +110,8 @@ def demote(update: Update, context: CallbackContext) -> str:
                "\n#DEMOTED" \
                "\n<b>Admin:</b> {}" \
                "\n<b>User:</b> {}".format(html.escape(chat.title),
-                                          mention_html(user.id, user.first_name),
+                                          mention_html(
+                                              user.id, user.first_name),
                                           mention_html(user_member.user.id, user_member.user.first_name))
 
     except BadRequest:
@@ -129,11 +134,13 @@ def pin(update: Update, context: CallbackContext) -> str:
 
     is_silent = True
     if len(args) >= 1:
-        is_silent = not (args[0].lower() == 'notify' or args[0].lower() == 'loud' or args[0].lower() == 'violent')
+        is_silent = not (args[0].lower() == 'notify' or args[0].lower(
+        ) == 'loud' or args[0].lower() == 'violent')
 
     if prev_message and is_group:
         try:
-            bot.pinChatMessage(chat.id, prev_message.message_id, disable_notification=is_silent)
+            bot.pinChatMessage(chat.id, prev_message.message_id,
+                               disable_notification=is_silent)
         except BadRequest as excp:
             if excp.message == "Chat_not_modified":
                 pass
@@ -141,7 +148,8 @@ def pin(update: Update, context: CallbackContext) -> str:
                 raise
         return "<b>{}:</b>" \
                "\n#PINNED" \
-               "\n<b>Admin:</b> {}".format(html.escape(chat.title), mention_html(user.id, user.first_name))
+               "\n<b>Admin:</b> {}".format(html.escape(chat.title),
+                                           mention_html(user.id, user.first_name))
 
     return ""
 
@@ -180,9 +188,11 @@ def invite(update: Update, context: CallbackContext):
             invitelink = bot.exportChatInviteLink(chat.id)
             update.effective_message.reply_text(invitelink)
         else:
-            update.effective_message.reply_text("I don't have access to the invite link, try changing my permissions!")
+            update.effective_message.reply_text(
+                "I don't have access to the invite link, try changing my permissions!")
     else:
-        update.effective_message.reply_text("I can only give you invite links for supergroups and channels, sorry!")
+        update.effective_message.reply_text(
+            "I can only give you invite links for supergroups and channels, sorry!")
 
 
 def adminlist(update: Update, context: CallbackContext):
@@ -190,7 +200,8 @@ def adminlist(update: Update, context: CallbackContext):
     text = "Admins in *{}*:".format(update.effective_chat.title or "this chat")
     for admin in administrators:
         user = admin.user
-        name = "[{}](tg://user?id={})".format(user.first_name + (user.last_name or ""), user.id)
+        name = "[{}](tg://user?id={})".format(user.first_name +
+                                              (user.last_name or ""), user.id)
         if user.username:
             name = escape_markdown("@" + user.username)
         text += "\n - {}".format(name)
@@ -216,15 +227,21 @@ __help__ = """
 
 __mod_name__ = "Admin"
 
-PIN_HANDLER = CommandHandler("pin", pin, pass_args=True, filters=Filters.chat_type.groups, run_async=True)
-UNPIN_HANDLER = CommandHandler("unpin", unpin, filters=Filters.chat_type.groups, run_async=True)
+PIN_HANDLER = CommandHandler(
+    "pin", pin, pass_args=True, filters=Filters.chat_type.groups, run_async=True)
+UNPIN_HANDLER = CommandHandler(
+    "unpin", unpin, filters=Filters.chat_type.groups, run_async=True)
 
-INVITE_HANDLER = CommandHandler("invitelink", invite, filters=Filters.chat_type.groups, run_async=True)
+INVITE_HANDLER = CommandHandler(
+    "invitelink", invite, filters=Filters.chat_type.groups, run_async=True)
 
-PROMOTE_HANDLER = CommandHandler("promote", promote, pass_args=True, filters=Filters.chat_type.groups, run_async=True)
-DEMOTE_HANDLER = CommandHandler("demote", demote, pass_args=True, filters=Filters.chat_type.groups, run_async=True)
+PROMOTE_HANDLER = CommandHandler(
+    "promote", promote, pass_args=True, filters=Filters.chat_type.groups, run_async=True)
+DEMOTE_HANDLER = CommandHandler(
+    "demote", demote, pass_args=True, filters=Filters.chat_type.groups, run_async=True)
 
-ADMINLIST_HANDLER = DisableAbleCommandHandler("adminlist", adminlist, filters=Filters.chat_type.groups, run_async=True)
+ADMINLIST_HANDLER = DisableAbleCommandHandler(
+    "adminlist", adminlist, filters=Filters.chat_type.groups, run_async=True)
 
 dispatcher.add_handler(PIN_HANDLER)
 dispatcher.add_handler(UNPIN_HANDLER)

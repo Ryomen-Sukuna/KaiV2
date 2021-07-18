@@ -78,7 +78,8 @@ def warn_user(user_id, chat_id, reason=None):
 
         warned_user.num_warns += 1
         if reason:
-            warned_user.reasons = warned_user.reasons + [reason]  # TODO:: double check this wizardry
+            warned_user.reasons = warned_user.reasons + \
+                [reason]  # TODO:: double check this wizardry
 
         reasons = warned_user.reasons
         num = warned_user.num_warns
@@ -255,7 +256,8 @@ def __load_chat_warn_filters():
         for x in all_filters:
             WARN_FILTERS[x.chat_id] += [x.keyword]
 
-        WARN_FILTERS = {x: sorted(set(y), key=lambda i: (-len(i), i)) for x, y in WARN_FILTERS.items()}
+        WARN_FILTERS = {x: sorted(set(y), key=lambda i: (-len(i), i))
+                        for x, y in WARN_FILTERS.items()}
 
     finally:
         SESSION.close()
@@ -263,13 +265,15 @@ def __load_chat_warn_filters():
 
 def migrate_chat(old_chat_id, new_chat_id):
     with WARN_INSERTION_LOCK:
-        chat_notes = SESSION.query(Warns).filter(Warns.chat_id == str(old_chat_id)).all()
+        chat_notes = SESSION.query(Warns).filter(
+            Warns.chat_id == str(old_chat_id)).all()
         for note in chat_notes:
             note.chat_id = str(new_chat_id)
         SESSION.commit()
 
     with WARN_FILTER_INSERTION_LOCK:
-        chat_filters = SESSION.query(WarnFilters).filter(WarnFilters.chat_id == str(old_chat_id)).all()
+        chat_filters = SESSION.query(WarnFilters).filter(
+            WarnFilters.chat_id == str(old_chat_id)).all()
         for filt in chat_filters:
             filt.chat_id = str(new_chat_id)
         SESSION.commit()
@@ -277,7 +281,8 @@ def migrate_chat(old_chat_id, new_chat_id):
         del WARN_FILTERS[str(old_chat_id)]
 
     with WARN_SETTINGS_LOCK:
-        chat_settings = SESSION.query(WarnSettings).filter(WarnSettings.chat_id == str(old_chat_id)).all()
+        chat_settings = SESSION.query(WarnSettings).filter(
+            WarnSettings.chat_id == str(old_chat_id)).all()
         for setting in chat_settings:
             setting.chat_id = str(new_chat_id)
         SESSION.commit()

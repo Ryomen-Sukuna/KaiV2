@@ -24,7 +24,8 @@ def mute(update: Update, args: List[str]) -> str:
 
     user_id = extract_user(message, args)
     if not user_id:
-        message.reply_text("You'll need to either give me a username to mute, or reply to someone to be muted.")
+        message.reply_text(
+            "You'll need to either give me a username to mute, or reply to someone to be muted.")
         return ""
 
     if user_id == bot.id:
@@ -44,7 +45,8 @@ def mute(update: Update, args: List[str]) -> str:
                    "\n#MUTE" \
                    "\n<b>Admin:</b> {}" \
                    "\n<b>User:</b> {}".format(html.escape(chat.title),
-                                              mention_html(user.id, user.first_name),
+                                              mention_html(
+                                                  user.id, user.first_name),
                                               mention_html(member.user.id, member.user.first_name))
 
         else:
@@ -65,14 +67,16 @@ def unmute(update: Update, args: List[str]) -> str:
 
     user_id = extract_user(message, args)
     if not user_id:
-        message.reply_text("You'll need to either give me a username to unmute, or reply to someone to be unmuted.")
+        message.reply_text(
+            "You'll need to either give me a username to unmute, or reply to someone to be unmuted.")
         return ""
 
     member = chat.get_member(int(user_id))
 
     if member:
         if is_user_admin(chat, user_id, member=member):
-            message.reply_text("This is an admin, what do you expect me to do?")
+            message.reply_text(
+                "This is an admin, what do you expect me to do?")
             return ""
 
         elif member.status != 'kicked' and member.status != 'left':
@@ -91,7 +95,8 @@ def unmute(update: Update, args: List[str]) -> str:
                        "\n#UNMUTE" \
                        "\n<b>Admin:</b> {}" \
                        "\n<b>User:</b> {}".format(html.escape(chat.title),
-                                                  mention_html(user.id, user.first_name),
+                                                  mention_html(
+                                                      user.id, user.first_name),
                                                   mention_html(member.user.id, member.user.first_name))
     else:
         message.reply_text("This user isn't even in the chat, unmuting them won't make them talk more than they "
@@ -133,7 +138,8 @@ def temp_mute(update: Update, args: List[str]) -> str:
         return ""
 
     if not reason:
-        message.reply_text("You haven't specified a time to mute this user for!")
+        message.reply_text(
+            "You haven't specified a time to mute this user for!")
         return ""
 
     split_reason = reason.split(None, 1)
@@ -160,7 +166,8 @@ def temp_mute(update: Update, args: List[str]) -> str:
 
     try:
         if member.can_send_messages is None or member.can_send_messages:
-            bot.restrict_chat_member(chat.id, user_id, until_date=mutetime, can_send_messages=False)
+            bot.restrict_chat_member(
+                chat.id, user_id, until_date=mutetime, can_send_messages=False)
             message.reply_text("Muted for {}!".format(time_val))
             return log
         else:
@@ -189,9 +196,12 @@ __help__ = """
 
 __mod_name__ = "Muting"
 
-MUTE_HANDLER = CommandHandler("mute", mute, pass_args=True, filters=Filters.chat_type.groups)
-UNMUTE_HANDLER = CommandHandler("unmute", unmute, pass_args=True, filters=Filters.chat_type.groups)
-TEMPMUTE_HANDLER = CommandHandler(["tmute", "tempmute"], temp_mute, pass_args=True, filters=Filters.chat_type.groups)
+MUTE_HANDLER = CommandHandler(
+    "mute", mute, pass_args=True, filters=Filters.chat_type.groups)
+UNMUTE_HANDLER = CommandHandler(
+    "unmute", unmute, pass_args=True, filters=Filters.chat_type.groups)
+TEMPMUTE_HANDLER = CommandHandler(
+    ["tmute", "tempmute"], temp_mute, pass_args=True, filters=Filters.chat_type.groups)
 
 dispatcher.add_handler(MUTE_HANDLER)
 dispatcher.add_handler(UNMUTE_HANDLER)

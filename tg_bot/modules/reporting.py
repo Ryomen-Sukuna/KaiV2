@@ -23,11 +23,13 @@ def report_setting(update: Update, args: List[str]):
         if len(args) >= 1:
             if args[0] in ("yes", "on"):
                 sql.set_user_setting(chat.id, True)
-                msg.reply_text("Turned on reporting! You'll be notified whenever anyone reports something.")
+                msg.reply_text(
+                    "Turned on reporting! You'll be notified whenever anyone reports something.")
 
             elif args[0] in ("no", "off"):
                 sql.set_user_setting(chat.id, False)
-                msg.reply_text("Turned off reporting! You wont get any reports.")
+                msg.reply_text(
+                    "Turned off reporting! You wont get any reports.")
         else:
             msg.reply_text("Your current report preference is: `{}`".format(sql.user_should_report(chat.id)),
                            parse_mode=ParseMode.MARKDOWN)
@@ -41,7 +43,8 @@ def report_setting(update: Update, args: List[str]):
 
             elif args[0] in ("no", "off"):
                 sql.set_chat_setting(chat.id, False)
-                msg.reply_text("Turned off reporting! No admins will be notified on /report or @admin.")
+                msg.reply_text(
+                    "Turned off reporting! No admins will be notified on /report or @admin.")
         else:
             msg.reply_text("This chat's current setting is: `{}`".format(sql.chat_should_report(chat.id)),
                            parse_mode=ParseMode.MARKDOWN)
@@ -55,7 +58,8 @@ def report(update: Update) -> str:
     user = update.effective_user  # type: Optional[User]
 
     if chat and message.reply_to_message and sql.chat_should_report(chat.id):
-        reported_user = message.reply_to_message.from_user  # type: Optional[User]
+        # type: Optional[User]
+        reported_user = message.reply_to_message.from_user
         chat_name = chat.title or chat.first or chat.username
         admin_list = chat.get_administrators()
 
@@ -71,7 +75,8 @@ def report(update: Update) -> str:
                                                                                    user.first_name),
                                                                       user.id)
             link = "\n<b>Link:</b> " \
-                   "<a href=\"http://telegram.me/{}/{}\">click here</a>".format(chat.username, message.message_id)
+                   "<a href=\"http://telegram.me/{}/{}\">click here</a>".format(
+                       chat.username, message.message_id)
 
             should_forward = False
 
@@ -87,12 +92,14 @@ def report(update: Update) -> str:
 
             if sql.user_should_report(admin.user.id):
                 try:
-                    bot.send_message(admin.user.id, msg + link, parse_mode=ParseMode.HTML)
+                    bot.send_message(admin.user.id, msg + link,
+                                     parse_mode=ParseMode.HTML)
 
                     if should_forward:
                         message.reply_to_message.forward(admin.user.id)
 
-                        if len(message.text.split()) > 1:  # If user is giving a reason, send his message too
+                        # If user is giving a reason, send his message too
+                        if len(message.text.split()) > 1:
                             message.forward(admin.user.id)
 
                 except Unauthorized:
@@ -131,7 +138,8 @@ NOTE: neither of these will get triggered if used by admins
    - If in chat, toggles that chat's status.
 """
 
-REPORT_HANDLER = CommandHandler("report", report, filters=Filters.chat_type.groups)
+REPORT_HANDLER = CommandHandler(
+    "report", report, filters=Filters.chat_type.groups)
 SETTING_HANDLER = CommandHandler("reports", report_setting, pass_args=True)
 ADMIN_REPORT_HANDLER = RegexHandler("(?i)@admin(s)?", report)
 

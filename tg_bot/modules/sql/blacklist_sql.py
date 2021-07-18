@@ -41,9 +41,11 @@ def add_to_blacklist(chat_id, trigger):
 
 def rm_from_blacklist(chat_id, trigger):
     with BLACKLIST_FILTER_INSERTION_LOCK:
-        blacklist_filt = SESSION.query(BlackListFilters).get((str(chat_id), trigger))
+        blacklist_filt = SESSION.query(
+            BlackListFilters).get((str(chat_id), trigger))
         if blacklist_filt:
-            if trigger in CHAT_BLACKLISTS.get(str(chat_id), set()):  # sanity check
+            # sanity check
+            if trigger in CHAT_BLACKLISTS.get(str(chat_id), set()):
                 CHAT_BLACKLISTS.get(str(chat_id), set()).remove(trigger)
 
             SESSION.delete(blacklist_filt)
@@ -98,7 +100,8 @@ def __load_chat_blacklists():
 
 def migrate_chat(old_chat_id, new_chat_id):
     with BLACKLIST_FILTER_INSERTION_LOCK:
-        chat_filters = SESSION.query(BlackListFilters).filter(BlackListFilters.chat_id == str(old_chat_id)).all()
+        chat_filters = SESSION.query(BlackListFilters).filter(
+            BlackListFilters.chat_id == str(old_chat_id)).all()
         for filt in chat_filters:
             filt.chat_id = str(new_chat_id)
         SESSION.commit()

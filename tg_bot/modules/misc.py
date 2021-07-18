@@ -148,7 +148,8 @@ def slap(update: Update, args: List[str]):
     if msg.from_user.username:
         curr_user = "@" + escape_markdown(msg.from_user.username)
     else:
-        curr_user = "[{}](tg://user?id={})".format(msg.from_user.first_name, msg.from_user.id)
+        curr_user = "[{}](tg://user?id={})".format(
+            msg.from_user.first_name, msg.from_user.id)
 
     user_id = extract_user(update.effective_message, args)
     if user_id:
@@ -170,7 +171,8 @@ def slap(update: Update, args: List[str]):
     hit = random.choice(HIT)
     throw = random.choice(THROW)
 
-    repl = temp.format(user1=user1, user2=user2, item=item, hits=hit, throws=throw)
+    repl = temp.format(user1=user1, user2=user2,
+                       item=item, hits=hit, throws=throw)
 
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
 
@@ -223,7 +225,7 @@ def info(update: Update, args: List[str]):
 
     elif not msg.reply_to_message and (not args or (
             len(args) >= 1 and not args[0].startswith("@") and not args[0].isdigit() and not msg.parse_entities(
-        [MessageEntity.TEXT_MENTION]))):
+                [MessageEntity.TEXT_MENTION]))):
         msg.reply_text("I can't extract a user from this.")
         return
 
@@ -268,7 +270,8 @@ def info(update: Update, args: List[str]):
 def get_time(update: Update, args: List[str]):
     location = " ".join(args)
     if location.lower() == bot.first_name.lower():
-        update.effective_message.reply_text("Its always banhammer time for me!")
+        update.effective_message.reply_text(
+            "Its always banhammer time for me!")
         bot.send_sticker(update.effective_chat.id, BAN_STICKER)
         return
 
@@ -298,12 +301,15 @@ def get_time(update: Update, args: List[str]):
                 location = country
 
             timenow = int(datetime.utcnow().timestamp())
-            res = requests.get(GMAPS_TIME, params=dict(location="{},{}".format(lat, long), timestamp=timenow))
+            res = requests.get(GMAPS_TIME, params=dict(
+                location="{},{}".format(lat, long), timestamp=timenow))
             if res.status_code == 200:
                 offset = json.loads(res.text)['dstOffset']
                 timestamp = json.loads(res.text)['rawOffset']
-                time_there = datetime.fromtimestamp(timenow + timestamp + offset).strftime("%H:%M:%S on %A %d %B")
-                update.message.reply_text("It's {} in {}".format(time_there, location))
+                time_there = datetime.fromtimestamp(
+                    timenow + timestamp + offset).strftime("%H:%M:%S on %A %d %B")
+                update.message.reply_text(
+                    "It's {} in {}".format(time_there, location))
 
 
 def echo(update: Update):
@@ -357,15 +363,18 @@ Keep in mind that your message <b>MUST</b> contain some text other than just a b
 
 
 def markdown_help(update: Update):
-    update.effective_message.reply_text(MARKDOWN_HELP, parse_mode=ParseMode.HTML)
-    update.effective_message.reply_text("Try forwarding the following message to me, and you'll see!")
+    update.effective_message.reply_text(
+        MARKDOWN_HELP, parse_mode=ParseMode.HTML)
+    update.effective_message.reply_text(
+        "Try forwarding the following message to me, and you'll see!")
     update.effective_message.reply_text("/save test This is a markdown test. _italics_, *bold*, `code`, "
                                         "[URL](example.com) [button](buttonurl:github.com) "
                                         "[button2](buttonurl://google.com:same)")
 
 
 def stats(update: Update):
-    update.effective_message.reply_text("Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS]))
+    update.effective_message.reply_text(
+        "Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS]))
 
 
 # /ip is for private use
@@ -391,9 +400,11 @@ SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True)
 INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True)
 
 ECHO_HANDLER = CommandHandler("echo", echo, filters=Filters.user(OWNER_ID))
-MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private)
+MD_HELP_HANDLER = CommandHandler(
+    "markdownhelp", markdown_help, filters=Filters.private)
 
-STATS_HANDLER = CommandHandler("stats", stats, filters=CustomFilters.sudo_filter)
+STATS_HANDLER = CommandHandler(
+    "stats", stats, filters=CustomFilters.sudo_filter)
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
 
 dispatcher.add_handler(ID_HANDLER)

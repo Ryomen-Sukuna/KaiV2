@@ -15,7 +15,6 @@ if is_module_loaded(FILENAME):
     from tg_bot.modules.helper_funcs.chat_status import user_admin
     from tg_bot.modules.sql import log_channel_sql as sql
 
-
     def loggable(func):
         @wraps(func)
         def log_action(bot: Bot, update: Update, *args, **kwargs):
@@ -33,27 +32,28 @@ if is_module_loaded(FILENAME):
             elif result == "":
                 pass
             else:
-                LOGGER.warning("%s was set as loggable, but had no return statement.", func)
+                LOGGER.warning(
+                    "%s was set as loggable, but had no return statement.", func)
 
             return result
 
         return log_action
-
 
     def send_log(bot: Bot, log_chat_id: str, orig_chat_id: str, result: str):
         try:
             bot.send_message(log_chat_id, result, parse_mode=ParseMode.HTML)
         except BadRequest as excp:
             if excp.message == "Chat not found":
-                bot.send_message(orig_chat_id, "This log channel has been deleted - unsetting.")
+                bot.send_message(
+                    orig_chat_id, "This log channel has been deleted - unsetting.")
                 sql.stop_chat_logging(orig_chat_id)
             else:
                 LOGGER.warning(excp.message)
                 LOGGER.warning(result)
                 LOGGER.exception("Could not parse")
 
-                bot.send_message(log_chat_id, result + "\n\nFormatting has been disabled due to an unexpected error.")
-
+                bot.send_message(
+                    log_chat_id, result + "\n\nFormatting has been disabled due to an unexpected error.")
 
     @run_async
     @user_admin
@@ -72,14 +72,14 @@ if is_module_loaded(FILENAME):
         else:
             message.reply_text("No log channel has been set for this group!")
 
-
     @run_async
     @user_admin
     def setlog(bot: Bot, update: Update):
         message = update.effective_message  # type: Optional[Message]
         chat = update.effective_chat  # type: Optional[Chat]
         if chat.type == chat.CHANNEL:
-            message.reply_text("Now, forward the /setlog to the group you want to tie this channel to!")
+            message.reply_text(
+                "Now, forward the /setlog to the group you want to tie this channel to!")
 
         elif message.forward_from_chat:
             sql.set_chat_log_channel(chat.id, message.forward_from_chat.id)
@@ -89,7 +89,8 @@ if is_module_loaded(FILENAME):
                 if excp.message == "Message to delete not found":
                     pass
                 else:
-                    LOGGER.exception("Error deleting message in log channel. Should work anyway though.")
+                    LOGGER.exception(
+                        "Error deleting message in log channel. Should work anyway though.")
 
             try:
                 bot.send_message(message.forward_from_chat.id,
@@ -109,7 +110,6 @@ if is_module_loaded(FILENAME):
                                " - send /setlog to the channel\n"
                                " - forward the /setlog to the group\n")
 
-
     @run_async
     @user_admin
     def unsetlog(bot: Bot, update: Update):
@@ -118,20 +118,18 @@ if is_module_loaded(FILENAME):
 
         log_channel = sql.stop_chat_logging(chat.id)
         if log_channel:
-            bot.send_message(log_channel, "Channel has been unlinked from {}".format(chat.title))
+            bot.send_message(
+                log_channel, "Channel has been unlinked from {}".format(chat.title))
             message.reply_text("Log channel has been un-set.")
 
         else:
             message.reply_text("No log channel has been set yet!")
 
-
     def __stats__():
         return "{} log channels set.".format(sql.num_logchannels())
 
-
     def __migrate__(old_chat_id, new_chat_id):
         sql.migrate_chat(old_chat_id, new_chat_id)
-
 
     def __chat_settings__(chat_id, user_id):
         log_channel = sql.get_chat_log_channel(chat_id)
@@ -140,7 +138,6 @@ if is_module_loaded(FILENAME):
             return "This group has all it's logs sent to: {} (`{}`)".format(escape_markdown(log_channel_info.title),
                                                                             log_channel)
         return "No log channel is set for this group!"
-
 
     __help__ = """
 *Admin only:*

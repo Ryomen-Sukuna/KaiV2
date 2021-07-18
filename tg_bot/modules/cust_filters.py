@@ -32,20 +32,23 @@ def list_handlers(update: Update):
     for keyword in all_handlers:
         entry = " - {}\n".format(escape_markdown(keyword))
         if len(entry) + len(filter_list) > telegram.MAX_MESSAGE_LENGTH:
-            update.effective_message.reply_text(filter_list, parse_mode=telegram.ParseMode.MARKDOWN)
+            update.effective_message.reply_text(
+                filter_list, parse_mode=telegram.ParseMode.MARKDOWN)
             filter_list = entry
         else:
             filter_list += entry
 
     if not filter_list == BASIC_FILTER_STRING:
-        update.effective_message.reply_text(filter_list, parse_mode=telegram.ParseMode.MARKDOWN)
+        update.effective_message.reply_text(
+            filter_list, parse_mode=telegram.ParseMode.MARKDOWN)
 
 
 # NOT ASYNC BECAUSE DISPATCHER HANDLER RAISED
 def filters(update: Update):
     chat = update.effective_chat  # type: Optional[Chat]
     msg = update.effective_message  # type: Optional[Message]
-    args = msg.text.split(None, 1)  # use python's maxsplit to separate Cmd, keyword, and reply_text
+    # use python's maxsplit to separate Cmd, keyword, and reply_text
+    args = msg.text.split(None, 1)
 
     if len(args) < 2:
         return
@@ -66,11 +69,14 @@ def filters(update: Update):
 
     # determine what the contents of the filter are - text, image, sticker, etc
     if len(extracted) >= 2:
-        offset = len(extracted[1]) - len(msg.text)  # set correct offset relative to command + notename
-        content, buttons = button_markdown_parser(extracted[1], entities=msg.parse_entities(), offset=offset)
+        # set correct offset relative to command + notename
+        offset = len(extracted[1]) - len(msg.text)
+        content, buttons = button_markdown_parser(
+            extracted[1], entities=msg.parse_entities(), offset=offset)
         content = content.strip()
         if not content:
-            msg.reply_text("There is no note message - You can't JUST have buttons, you need a message to go with it!")
+            msg.reply_text(
+                "There is no note message - You can't JUST have buttons, you need a message to go with it!")
             return
 
     elif msg.reply_to_message and msg.reply_to_message.sticker:
@@ -82,7 +88,8 @@ def filters(update: Update):
         is_document = True
 
     elif msg.reply_to_message and msg.reply_to_message.photo:
-        content = msg.reply_to_message.photo[-1].file_id  # last elem = best quality
+        # last elem = best quality
+        content = msg.reply_to_message.photo[-1].file_id
         is_image = True
 
     elif msg.reply_to_message and msg.reply_to_message.audio:
@@ -131,10 +138,12 @@ def stop_filter(update: Update):
     for keyword in chat_filters:
         if keyword == args[1]:
             sql.remove_filter(chat.id, args[1])
-            update.effective_message.reply_text("Yep, I'll stop replying to that.")
+            update.effective_message.reply_text(
+                "Yep, I'll stop replying to that.")
             raise DispatcherHandlerStop
 
-    update.effective_message.reply_text("That's not a current filter - run /filters for all active filters.")
+    update.effective_message.reply_text(
+        "That's not a current filter - run /filters for all active filters.")
 
 
 def reply_filter(update: Update):
@@ -182,8 +191,10 @@ def reply_filter(update: Update):
                     else:
                         message.reply_text("This note could not be sent, as it is incorrectly formatted. Ask in "
                                            "@MarieSupport if you can't figure out why!")
-                        LOGGER.warning("Message %s could not be parsed", str(filt.reply))
-                        LOGGER.exception("Could not parse filter %s in chat %s", str(filt.keyword), str(chat.id))
+                        LOGGER.warning(
+                            "Message %s could not be parsed", str(filt.reply))
+                        LOGGER.exception("Could not parse filter %s in chat %s", str(
+                            filt.keyword), str(chat.id))
 
             else:
                 # LEGACY - all new filters will have has_markdown set to True.
@@ -219,7 +230,8 @@ __mod_name__ = "Filters"
 
 FILTER_HANDLER = CommandHandler("filter", filters)
 STOP_HANDLER = CommandHandler("stop", stop_filter)
-LIST_HANDLER = DisableAbleCommandHandler("filters", list_handlers, admin_ok=True)
+LIST_HANDLER = DisableAbleCommandHandler(
+    "filters", list_handlers, admin_ok=True)
 CUST_FILTER_HANDLER = MessageHandler(CustomFilters.has_text, reply_filter)
 
 dispatcher.add_handler(FILTER_HANDLER)
