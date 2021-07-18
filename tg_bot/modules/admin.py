@@ -34,7 +34,7 @@ def promote(update: Update, context: CallbackContext) -> str:
         return ""
 
     user_member = chat.get_member(user_id)
-    if user_member.status == 'administrator' or user_member.status == 'creator':
+    if user_member.status in ('administrator', 'creator'):
         message.reply_text("How am I meant to promote someone that's already an admin?")
         return ""
 
@@ -83,7 +83,7 @@ def demote(update: Update, context: CallbackContext) -> str:
         message.reply_text("This person CREATED the chat, how would I demote them?")
         return ""
 
-    if not user_member.status == 'administrator':
+    if user_member.status != 'administrator':
         message.reply_text("Can't demote what wasn't promoted!")
         return ""
 

@@ -62,7 +62,7 @@ UNGBAN_ERRORS = {
 
 
 @support_plus
-def gban(update: Update, context: CallbackContext):
+def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
     bot, args = context.bot, context.args
     message = update.effective_message
     user = update.effective_user
@@ -72,27 +72,39 @@ def gban(update: Update, context: CallbackContext):
     user_id, reason = extract_user_and_text(message, args)
 
     if not user_id:
-        message.reply_text("You don't seem to be referring to a user.")
+        message.reply_text(
+            "You don't seem to be referring to a user or the ID specified is incorrect.."
+        )
         return
     
     if int(user_id) in DEV_USERS:
-    	message.reply_text("That user is part of special users! I can't against our own")
+    	message.reply_text(
+    	    "That user is part of special users! I can't against our own"
+    	)    
     	return
 
     if int(user_id) in SUDO_USERS:
-        message.reply_text("I spy, with my little eye... a sudo user war! Why are you guys turning on each other?")
+        message.reply_text(
+            "I spy, with my little eye... a sudo user war! Why are you guys turning on each other?"
+        )    
         return
 
     if int(user_id) in SUPPORT_USERS:
-        message.reply_text("OOOH someone's trying to gban a support user! *grabs popcorn*")
+        message.reply_text(
+            "OOOH someone's trying to gban a support user! *grabs popcorn*"
+        )    
         return
 
     if int(user_id) in (777000, 1087968824):
-        message.reply_text("Huh, why would I gban Telegram bots?")
+        message.reply_text(
+            "Huh, why would I gban Telegram bots?"
+        )    
         return        
     
     if user_id == bot.id:
-        message.reply_text("-_- So funny, lets gban myself why don't I? Nice try.")
+        message.reply_text(
+            "-_- So funny, lets gban myself why don't I? Nice try."
+        )    
         return
 
     try:
