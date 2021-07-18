@@ -23,7 +23,7 @@ from tg_bot import (
     SUPPORT_USERS,
     STRICT_GBAN,
 )    
-from tg_bot.modules.helper_funcs.chat_status import
+from tg_bot.modules.helper_funcs.chat_status import (
     user_admin, 
     is_user_admin,
     support_plus,
@@ -63,9 +63,8 @@ UNGBAN_ERRORS = {
 
 @support_plus
 def gban(update: Update, context: CallbackContext):
-	bot = context.bot
-    args = context.args
-    message = update.effective_message  # type: Optional[Message]
+	bot, args = context.bot, context.args
+    message = update.effective_message
     user = update.effective_user
     chat = update.effective_chat
     log_message = ""
@@ -99,13 +98,12 @@ def gban(update: Update, context: CallbackContext):
     try:
         user_chat = bot.get_chat(user_id)
     except BadRequest as excp:
-    	if excp.message == "user not found"
-            message.reply_text("I can't seem to find this user.")
-            return ""
-        else:
-        	return
+        if excp.message != "User not found":
+            return
 
-    if user_chat.type != 'private':
+        message.reply_text("I can't seem to find this user.")
+        return ""
+    if user_chat.type != "private":
         message.reply_text("That's not a user!")
         return
 
@@ -184,11 +182,9 @@ def gban(update: Update, context: CallbackContext):
             gbanned += 1
             
         except BadRequest as excp:
-            if excp.message in GBAN_ERRORS:
-                pass
-            else:
-                message.reply_text(f"Could not gban due to: {excp.message}"
-                if  GBAN_LOGS:
+            if excp.message not in GBAN_ERRORS:
+                message.reply_text(f"Could not gban due to: {excp.message}")
+                if GBAN_LOGS:
                 	 bot.send_message(
                 	     GBAN_LOGS,
                 	     f"Could not gban due to {excp.message}",
@@ -221,10 +217,7 @@ def gban(update: Update, context: CallbackContext):
 
     if gban_time > 60:
         gban_time = round((gban_time / 60), 2)
-        message.reply_text("Done! Gbanned.", parse_mode=ParseMode.HTML)
-    else:
-        message.reply_text("Done! Gbanned.", parse_mode=ParseMode.HTML)
-
+    message.reply_text("Done! Gbanned.", parse_mode=ParseMode.HTML)
     try:
         bot.send_message(
             user_id,
@@ -240,8 +233,7 @@ def gban(update: Update, context: CallbackContext):
 
 
 def ungban(update: Update, context: CallbackContext):
-    bot = context.bot
-    args = context.args
+    bot, args = context.bot, context.args
     message = update.effective_message
     user = update.effective_user
     chat = update.effective_chat
@@ -375,7 +367,7 @@ def gbanlist(update: Update, context: CallbackContext):
 
         
 def check_and_ban(update, user_id, should_message=True):
-
+	
     if user_id in SUPPORT_USERS or user_id in WHITELIST_USERS:
         sw_ban = None
     else:
