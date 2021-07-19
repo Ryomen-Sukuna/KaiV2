@@ -83,7 +83,7 @@ class KaiINIT:
                 return sw
 
 
-KInit = KaiINIT(parser=kigconfig)
+KInit = KaiINIT(parser=kaiconfig)
 
 SYS_ADMIN = KInit.SYS_ADMIN
 OWNER_ID = KInit.OWNER_ID
