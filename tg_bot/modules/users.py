@@ -156,8 +156,7 @@ def __migrate__(old_chat_id, new_chat_id):
 
 
 def __gdpr__(user_id):
-    sql.clear_user_info(user_id)
-    sql.clear_user_bio(user_id)
+    sql.del_user(user_id)
 
 
 __help__ = ""  # no help string
