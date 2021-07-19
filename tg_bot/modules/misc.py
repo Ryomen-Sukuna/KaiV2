@@ -1,4 +1,5 @@
 import html
+import os
 import json
 import random
 from datetime import datetime
@@ -7,19 +8,20 @@ from typing import Optional, List
 import requests
 import tg_bot.modules.sql.userinfo_sql as sql
 from telegram import Update, MessageEntity, ParseMode
+from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters, CallbackContext
 from telegram.utils.helpers import escape_markdown, mention_html
 from tg_bot import (
     dispatcher,
     OWNER_ID,
+    DEV_USERS,
     SUDO_USERS,
     SUPPORT_USERS,
     WHITELIST_USERS,
     INFOPIC,
     BAN_STICKER,
 )
-from tg_bot.__main__ import GDPR
-from tg_bot.__main__ import STATS, USER_INFO
+from tg_bot.__main__ import GDPR, STATS, USER_INFO, TOKEN
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.extraction import extract_user
 from tg_bot.modules.helper_funcs.filters import CustomFilters
@@ -176,7 +178,7 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
         text += f"\nThe Nation level of this person is Neptunia"
         Super_user_present = True
 
-    if super_user_present:
+    if Super_user_present:
         text += ' [<a href="https://t.me/{}?start=nations">?</a>]'.format(bot.username)
 
     text += "\n"
