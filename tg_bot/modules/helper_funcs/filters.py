@@ -1,4 +1,4 @@
-from tg_bot import DEV_USERS, SUDO_USERS, DEMONS
+from tg_bot import DEV_USERS, SUDO_USERS, SUPPORT_USERS
 from telegram import Message
 from telegram.ext import MessageFilter
 
@@ -6,7 +6,7 @@ from telegram.ext import MessageFilter
 class CustomFilters(object):
     class _Supporters(MessageFilter):
         def filter(self, message: Message):
-            return bool(message.from_user and message.from_user.id in DEMONS)
+            return bool(message.from_user and message.from_user.id in SUPPORT_USERS)
 
     support_filter = _Supporters()
 
