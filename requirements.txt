@@ -7,3 +7,4 @@ psycopg2-binary
 feedparser
 spamwatch
 multicolorcaptcha
+pyrate-limiter
