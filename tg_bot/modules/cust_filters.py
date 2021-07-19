@@ -458,9 +458,7 @@ def reply_filter(update, context):
                             )
                         except BadRequest as excp:
                             log.exception("Error in filters: " + excp.message)
-                        log.warning(
-                            "Message %s could not be parsed", str(filt.reply)
-                        )
+                        log.warning("Message %s could not be parsed", str(filt.reply))
                         log.exception(
                             "Could not parse filter %s in chat %s",
                             str(filt.keyword),

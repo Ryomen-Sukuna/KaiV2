@@ -9,18 +9,23 @@ from logging.config import fileConfig
 
 StartTime = time.time()
 
+
 def get_user_list(key):
     # Import here to evade a circular import
     from tg_bot.modules.sql import level_sql
+
     levels = level_sql.get_levels(key)
     return [a.user_id for a in levels]
 
+
 # enable logging
 
-fileConfig('logging.ini')
+fileConfig("logging.ini")
 
-log = logging.getLogger('[IronBlooD]')
-logging.getLogger('ptbcontrib.postgres_persistence.postgrespersistence').setLevel(logging.WARNING)
+log = logging.getLogger("[IronBlooD]")
+logging.getLogger("ptbcontrib.postgres_persistence.postgrespersistence").setLevel(
+    logging.WARNING
+)
 log.info("[KAI] KAI is starting. | An Iron Blood Project. | Licensed under GPLv3.")
 log.info("[KAI] Not affiliated to Villain or Yostar in any way whatsoever.")
 log.info("[KAI] Project maintained by: github.com/Ryomen-Sukuna (t.me/Anomaliii)")
@@ -36,38 +41,38 @@ parser = ConfigParser()
 parser.read("config.ini")
 kaiconfig = parser["kaiconfig"]
 
+
 class KaiINIT:
     def __init__(self, parser):
         self.parser = parser
-        self.SYS_ADMIN = self.parser.getint('SYS_ADMIN', 0)
-        self.OWNER_ID = self.parser.getint('OWNER_ID')
-        self.OWNER_USERNAME = self.parser.get('OWNER_USERNAME', None)
+        self.SYS_ADMIN = self.parser.getint("SYS_ADMIN", 0)
+        self.OWNER_ID = self.parser.getint("OWNER_ID")
+        self.OWNER_USERNAME = self.parser.get("OWNER_USERNAME", None)
         self.API_ID = self.parser.getint("API_ID")
         self.API_HASH = self.parser.get("API_HASH")
-        self.WEBHOOK = self.parser.getboolean('WEBHOOK', False)
-        self.URL = self.parser.get('URL', None)
-        self.CERT_PATH = self.parser.get('CERT_PATH', None)
-        self.PORT = self.parser.getint('PORT', None)
-        self.INFOPIC = self.parser.getboolean('INFOPIC', False)
+        self.WEBHOOK = self.parser.getboolean("WEBHOOK", False)
+        self.URL = self.parser.get("URL", None)
+        self.CERT_PATH = self.parser.get("CERT_PATH", None)
+        self.PORT = self.parser.getint("PORT", None)
+        self.INFOPIC = self.parser.getboolean("INFOPIC", False)
         self.DEL_CMDS = self.parser.getboolean("DEL_CMDS", False)
         self.STRICT_GBAN = self.parser.getboolean("STRICT_GBAN", False)
         self.ALLOW_EXCL = self.parser.getboolean("ALLOW_EXCL", False)
-        self.CUSTOM_CMD = ['/', '!']
+        self.CUSTOM_CMD = ["/", "!"]
         self.BAN_STICKER = self.parser.get("BAN_STICKER", None)
         self.TOKEN = self.parser.get("TOKEN")
         self.DB_URI = self.parser.get("SQLALCHEMY_DATABASE_URI")
         self.LOAD = self.parser.get("LOAD").split()
         self.LOAD = list(map(str, self.LOAD))
-        self.MESSAGE_DUMP = self.parser.getint('MESSAGE_DUMP', None)
-        self.GBAN_LOGS = self.parser.getint('GBAN_LOGS', None)
+        self.MESSAGE_DUMP = self.parser.getint("MESSAGE_DUMP", None)
+        self.GBAN_LOGS = self.parser.getint("GBAN_LOGS", None)
         self.NO_LOAD = self.parser.get("NO_LOAD").split()
         self.NO_LOAD = list(map(str, self.NO_LOAD))
-        self.spamwatch_api = self.parser.get('spamwatch_api', None)
-        self.CF_API_KEY =  self.parser.get("CF_API_KEY", None)
-        self.bot_id = 0 #placeholder
-        self.bot_name = "Kai" #placeholder
-        self.bot_username = "KaiRobot" #placeholder
-
+        self.spamwatch_api = self.parser.get("spamwatch_api", None)
+        self.CF_API_KEY = self.parser.get("CF_API_KEY", None)
+        self.bot_id = 0  # placeholder
+        self.bot_name = "Kai"  # placeholder
+        self.bot_username = "KaiRobot"  # placeholder
 
     def init_sw(self):
         if self.spamwatch_api is None:
@@ -113,7 +118,7 @@ SPAMMERS = get_user_list("spammers")
 spamwatch_api = KInit.spamwatch_api
 CF_API_KEY = KInit.CF_API_KEY
 
-SPB_MODE = kaiconfig.getboolean('SPB_MODE', False)
+SPB_MODE = kaiconfig.getboolean("SPB_MODE", False)
 
 # SpamWatch
 sw = KInit.init_sw()
@@ -121,9 +126,12 @@ sw = KInit.init_sw()
 from tg_bot.modules.sql import SESSION
 
 
-updater = tg.Updater(TOKEN, workers=min(32, os.cpu_count() + 4), request_kwargs={"read_timeout": 10, "connect_timeout": 10})
+updater = tg.Updater(
+    TOKEN,
+    workers=min(32, os.cpu_count() + 4),
+    request_kwargs={"read_timeout": 10, "connect_timeout": 10},
+)
 dispatcher = updater.dispatcher
-
 
 
 # Load at end to ensure all prev variables have been set
