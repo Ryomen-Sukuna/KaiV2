@@ -51,6 +51,18 @@ RUN_STRINGS = (
 )
 
 SLAP_KAI_TEMPLATES = (
+    "Slap me one more time and I'll mute you.",
+    "Stop slapping me.",
+    [
+        "I am muting you for a minute.",  # normal reply
+        "Stop slapping me just because I can't mute you.",  # reply to admin
+        "tmute",  # command
+        "Shut up!",
+        "Silence!",
+    ],
+)
+
+SLAP_TEMPLATES = (
     "{user1} {hits} {user2} with a {item}.",
     "{user1} {hits} {user2} in the face with a {item}.",
     "{user1} {hits} {user2} around a bit with a {item}.",
