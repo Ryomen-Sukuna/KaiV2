@@ -3,7 +3,7 @@ import importlib
 import re
 from typing import Optional, List
 
-from telegram import Update, ParseMode, InlineKeyboardMarkup, InlineKeyboardButton,
+from telegram import Update, ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.error import (
     Unauthorized, 
     BadRequest,
@@ -13,7 +13,7 @@ from telegram.error import (
     TelegramError,
 )    
 from telegram.ext import (
-    CallbackContext
+    CallbackContext,
     CommandHandler,
     Filters,
     MessageHandler,
