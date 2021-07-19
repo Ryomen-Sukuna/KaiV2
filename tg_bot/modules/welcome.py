@@ -196,7 +196,6 @@ def send(update, message, keyboard, backup_message):
     return msg
 
 
-@loggable
 def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
     bot, job_queue = context.bot, context.job_queue
     chat = update.effective_chat
@@ -242,7 +241,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
             # Give the owner a special welcome
             if new_mem.id == OWNER_ID:
                 update.effective_chat.send_message(
-                    text="Oh hi, my creator.", reply_to_message_id=reply
+                    f"Oh hi, my creator.", reply_to_message_id=reply
                 )
                 welcome_log = (
                     f"{html.escape(chat.title)}\n"
@@ -253,35 +252,35 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
             # Welcome Devs
             if new_mem.id in DEV_USERS:
                 update.effective_chat.send_message(
-                    text="Whoa! A member of the Iron Blood just joined!",
+                    f"Whoa! A member of the Iron Blood just joined!",
                     reply_to_message_id=reply,
                 )
 
             # Welcome Sudos
             if new_mem.id in SUDO_USERS:
                 update.effective_chat.send_message(
-                    text="Huh! A Sudo Users just joined! Stay Alert!",
+                    f"Huh! A Sudo Users just joined! Stay Alert!",
                     reply_to_message_id=reply,
                 )
 
             # Welcome Support
             if new_mem.id in SUPPORT_USERS:
                 update.effective_chat.send_message(
-                    text="Huh! Someone with a Support Users just joined!",
+                    f"Huh! Someone with a Support Users just joined!",
                     reply_to_message_id=reply,
                 )
 
             # Welcome WHITELIST_USERS
             if new_mem.id in WHITELIST_USERS:
                 update.effective_chat.send_message(
-                    text="Oof! A Whitelist Users just joined!",
+                    f"Oof! A Whitelist Users just joined!",
                     reply_to_message_id=reply,
                 )
 
             # Welcome yourself
             if new_mem.id == bot.id:
                 update.effective_chat.send_message(
-                    text="Thanks for adding me! Join @ironbloodnations for support.",
+                    f"Thanks for adding me! Join @ironbloodnations for support.",
                     reply_to_message_id=reply,
                 )
             buttons = sql.get_welc_buttons(chat.id)
