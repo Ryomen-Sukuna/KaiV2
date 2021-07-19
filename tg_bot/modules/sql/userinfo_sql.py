@@ -74,8 +74,8 @@ def set_user_bio(user_id, bio):
 
         SESSION.add(userbio)
         SESSION.commit()
-        
-        
+
+
 def clear_user_info(user_id):
     with INSERTION_LOCK:
         curr = SESSION.query(UserInfo).get(user_id)

@@ -242,7 +242,9 @@ def set_title(update: Update, context: CallbackContext):
     try:
         bot.setChatAdministratorCustomTitle(chat.id, user_id, title)
     except BadRequest:
-        message.reply_text("Either they aren't promoted by me or you set a title text that is impossible to set.")
+        message.reply_text(
+            "Either they aren't promoted by me or you set a title text that is impossible to set."
+        )
         return
 
     bot.sendMessage(
@@ -278,7 +280,9 @@ def pin(update: Update, context: CallbackContext) -> str:
     if prev_message and is_group:
         try:
             bot.pinChatMessage(
-                chat.id, prev_message.message_id, disable_notification=is_silent,
+                chat.id,
+                prev_message.message_id,
+                disable_notification=is_silent,
             )
         except BadRequest as excp:
             if excp.message == "Chat_not_modified":
@@ -344,13 +348,15 @@ def invite(update: Update, context: CallbackContext):
         )
 
 
-@connection_status        
+@connection_status
 def adminlist(update: Update, context: CallbackContext):
     administrators = update.effective_chat.get_administrators()
     text = "Admins in *{}*:".format(update.effective_chat.title or "this chat")
     for admin in administrators:
         user = admin.user
-        name = "[{}](tg://user?id={})".format(user.first_name + (user.last_name or ""), user.id)
+        name = "[{}](tg://user?id={})".format(
+            user.first_name + (user.last_name or ""), user.id
+        )
         if user.username:
             name = escape_markdown("@" + user.username)
         text += "\n - {}".format(name)
@@ -360,8 +366,9 @@ def adminlist(update: Update, context: CallbackContext):
 
 def __chat_settings__(chat_id, user_id):
     return "You are *admin*: `{}`".format(
-        dispatcher.bot.get_chat_member(chat_id, user_id).status in ("administrator", "creator"))
-
+        dispatcher.bot.get_chat_member(chat_id, user_id).status
+        in ("administrator", "creator")
+    )
 
 
 __help__ = """
@@ -379,8 +386,12 @@ __help__ = """
 
 ADMINLIST_HANDLER = DisableAbleCommandHandler("admins", adminlist, run_async=True)
 
-PIN_HANDLER = CommandHandler("pin", pin, filters=Filters.chat_type.groups, run_async=True)
-UNPIN_HANDLER = CommandHandler("unpin", unpin, filters=Filters.chat_type.groups, run_async=True)
+PIN_HANDLER = CommandHandler(
+    "pin", pin, filters=Filters.chat_type.groups, run_async=True
+)
+UNPIN_HANDLER = CommandHandler(
+    "unpin", unpin, filters=Filters.chat_type.groups, run_async=True
+)
 
 INVITE_HANDLER = DisableAbleCommandHandler("invitelink", invite, run_async=True)
 
@@ -389,7 +400,10 @@ DEMOTE_HANDLER = DisableAbleCommandHandler("demote", demote, run_async=True)
 
 SET_TITLE_HANDLER = CommandHandler("title", set_title, run_async=True)
 ADMIN_REFRESH_HANDLER = CommandHandler(
-    "admincache", refresh_admin, filters=Filters.chat_type.groups, run_async=True,
+    "admincache",
+    refresh_admin,
+    filters=Filters.chat_type.groups,
+    run_async=True,
 )
 
 dispatcher.add_handler(ADMINLIST_HANDLER)
