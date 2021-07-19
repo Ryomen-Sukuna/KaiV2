@@ -4,6 +4,7 @@ import re
 import time
 from functools import partial
 from io import BytesIO
+from typing import Tuple, Optional
 import tg_bot.modules.sql.welcome_sql as sql
 from tg_bot import (
     DEV_USERS,
