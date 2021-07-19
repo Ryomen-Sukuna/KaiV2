@@ -72,7 +72,8 @@ def list_handlers(update, context):
 
     if not all_handlers:
         send_message(
-            update.effective_message, "No filters saved in {}!".format(chat_name),
+            update.effective_message,
+            "No filters saved in {}!".format(chat_name),
         )
         return
 
@@ -103,7 +104,8 @@ def filters(update, context):
     user = update.effective_user
     msg = update.effective_message
     args = msg.text.split(
-        None, 1,
+        None,
+        1,
     )  # use python's maxsplit to separate Cmd, keyword, and reply_text
 
     conn = connected(context.bot, update, chat, user.id)
@@ -148,7 +150,9 @@ def filters(update, context):
             msg.text,
         )  # set correct offset relative to command + notename
         text, buttons = button_markdown_parser(
-            extracted[1], entities=msg.parse_entities(), offset=offset,
+            extracted[1],
+            entities=msg.parse_entities(),
+            offset=offset,
         )
         text = text.strip()
         if not text:
@@ -169,7 +173,9 @@ def filters(update, context):
             text_to_parsing,
         )  # set correct offset relative to command + notename
         text, buttons = button_markdown_parser(
-            text_to_parsing, entities=msg.parse_entities(), offset=offset,
+            text_to_parsing,
+            entities=msg.parse_entities(),
+            offset=offset,
         )
         text = text.strip()
 
@@ -191,7 +197,9 @@ def filters(update, context):
             text_to_parsing,
         )  # set correct offset relative to command + notename
         text, buttons = button_markdown_parser(
-            text_to_parsing, entities=msg.parse_entities(), offset=offset,
+            text_to_parsing,
+            entities=msg.parse_entities(),
+            offset=offset,
         )
         text = text.strip()
         if (msg.reply_to_message.text or msg.reply_to_message.caption) and not text:
@@ -323,7 +331,8 @@ def reply_filter(update, context):
                                 LOGGER.exception("Error in filters: " + excp.message)
                                 return
                     valid_format = escape_invalid_curly_brackets(
-                        text, VALID_WELCOME_FORMATTERS,
+                        text,
+                        VALID_WELCOME_FORMATTERS,
                     )
                     if valid_format:
                         filtext = valid_format.format(
@@ -343,10 +352,12 @@ def reply_filter(update, context):
                             username="@" + escape(message.from_user.username)
                             if message.from_user.username
                             else mention_html(
-                                message.from_user.id, message.from_user.first_name,
+                                message.from_user.id,
+                                message.from_user.first_name,
                             ),
                             mention=mention_html(
-                                message.from_user.id, message.from_user.first_name,
+                                message.from_user.id,
+                                message.from_user.first_name,
                             ),
                             chatname=escape(message.chat.title)
                             if message.chat.type != "private"
@@ -365,7 +376,7 @@ def reply_filter(update, context):
                             markdown_to_html(filtext),
                             parse_mode=ParseMode.HTML,
                             disable_web_page_preview=True,
-                            reply_markup=keyboard
+                            reply_markup=keyboard,
                         )
                     except BadRequest as excp:
                         LOGGER.exception("Error in filters: " + excp.message)
@@ -459,7 +470,7 @@ def reply_filter(update, context):
                         )
 
             else:
-                    # LEGACY - all new filters will have has_markdown set to True.
+                # LEGACY - all new filters will have has_markdown set to True.
                 try:
                     send_message(update.effective_message, filt.reply)
                 except BadRequest as excp:
@@ -480,7 +491,8 @@ def rmall_filters(update, context):
             [
                 [
                     InlineKeyboardButton(
-                        text="Stop all filters", callback_data="filters_rmall",
+                        text="Stop all filters",
+                        callback_data="filters_rmall",
                     ),
                 ],
                 [InlineKeyboardButton(text="Cancel", callback_data="filters_cancel")],
@@ -540,7 +552,9 @@ def get_exception(excp, filt, chat):
     else:
         LOGGER.warning("Message %s could not be parsed", str(filt.reply))
         LOGGER.exception(
-            "Could not parse filter %s in chat %s", str(filt.keyword), str(chat.id),
+            "Could not parse filter %s in chat %s",
+            str(filt.keyword),
+            str(chat.id),
         )
         return "This data could not be sent because it is incorrectly formatted."
 
@@ -608,12 +622,21 @@ __mod_name__ = "Filters"
 FILTER_HANDLER = CommandHandler("filter", filters, run_async=True)
 STOP_HANDLER = CommandHandler("stop", stop_filter, run_async=True)
 RMALLFILTER_HANDLER = CommandHandler(
-    "removeallfilters", rmall_filters, filters=Filters.chat_type.groups, run_async=True,
+    "removeallfilters",
+    rmall_filters,
+    filters=Filters.chat_type.groups,
+    run_async=True,
 )
-RMALLFILTER_CALLBACK = CallbackQueryHandler(rmall_callback, pattern=r"filters_.*", run_async=True)
-LIST_HANDLER = DisableAbleCommandHandler("filters", list_handlers, admin_ok=True, run_async=True)
+RMALLFILTER_CALLBACK = CallbackQueryHandler(
+    rmall_callback, pattern=r"filters_.*", run_async=True
+)
+LIST_HANDLER = DisableAbleCommandHandler(
+    "filters", list_handlers, admin_ok=True, run_async=True
+)
 CUST_FILTER_HANDLER = MessageHandler(
-    CustomFilters.has_text & ~Filters.update.edited_message, reply_filter, run_async=True,
+    CustomFilters.has_text & ~Filters.update.edited_message,
+    reply_filter,
+    run_async=True,
 )
 
 dispatcher.add_handler(FILTER_HANDLER)

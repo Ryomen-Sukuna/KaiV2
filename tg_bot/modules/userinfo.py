@@ -36,6 +36,7 @@ def about_me(update: Update, context: CallbackContext):
             "You haven't set an info message about yourself yet!"
         )
 
+
 def set_about_me(update: Update, context: CallbackContext):
     bot = context.bot
     message = update.effective_message
@@ -65,6 +66,7 @@ def set_about_me(update: Update, context: CallbackContext):
                     MAX_MESSAGE_LENGTH // 4, len(info[1])
                 )
             )
+
 
 def about_bio(update: Update, context: CallbackContext):
     args = context.args
@@ -207,10 +209,14 @@ __help__ = """
 __mod_name__ = "Bios and Abouts"
 
 SET_BIO_HANDLER = DisableAbleCommandHandler("setbio", set_about_bio, run_async=True)
-GET_BIO_HANDLER = DisableAbleCommandHandler("bio", about_bio, pass_args=True, run_async=True)
+GET_BIO_HANDLER = DisableAbleCommandHandler(
+    "bio", about_bio, pass_args=True, run_async=True
+)
 
 SET_ABOUT_HANDLER = DisableAbleCommandHandler("setme", set_about_me, run_async=True)
-GET_ABOUT_HANDLER = DisableAbleCommandHandler("me", about_me, pass_args=True, run_async=True)
+GET_ABOUT_HANDLER = DisableAbleCommandHandler(
+    "me", about_me, pass_args=True, run_async=True
+)
 
 dispatcher.add_handler(SET_BIO_HANDLER)
 dispatcher.add_handler(GET_BIO_HANDLER)
