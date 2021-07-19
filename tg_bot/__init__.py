@@ -111,8 +111,8 @@ else:
     CF_API_KEY = Config.CF_API_KEY
 
 
-SUDO_USERS.add(OWNER_ID)
-DEV_USERS.add(OWNER_ID)
+SUDO_USERS.append(OWNER_ID)
+DEV_USERS.append(OWNER_ID)
 
 if not SPAMWATCH_API:
     sw = None
