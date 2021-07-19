@@ -172,13 +172,12 @@ def button(update: Update) -> str:
                     user_member.user.id,
                 )
             )
-        else:
-            update.effective_message.edit_text(
-                "User has already has no warns.".format(
-                    mention_html(user.id, user.first_name)
-                ),
-                parse_mode=ParseMode.HTML,
-            )
+        update.effective_message.edit_text(
+            "User has already has no warns.".format(
+                mention_html(user.id, user.first_name)
+            ),
+            parse_mode=ParseMode.HTML,
+        )
 
     return ""
 
@@ -205,10 +204,8 @@ def warn_user(update: Update, args: List[str]) -> str:
                 message.reply_to_message,
                 warner,
             )
-        else:
-            return warn(chat.get_member(user_id).user, chat, reason, message, warner)
-    else:
-        message.reply_text("No user was designated!")
+        return warn(chat.get_member(user_id).user, chat, reason, message, warner)
+    message.reply_text("No user was designated!")
     return ""
 
 
@@ -237,8 +234,7 @@ def reset_warns(update: Update, args: List[str]) -> str:
                 warned.id,
             )
         )
-    else:
-        message.reply_text("No user has been designated!")
+    message.reply_text("No user has been designated!")
     return ""
 
 
@@ -434,7 +430,7 @@ def set_warn_strength(update: Update, args: List[str]):
                 )
             )
 
-        elif args[0].lower() in ("off", "no"):
+        if args[0].lower() in ("off", "no"):
             sql.set_warn_strength(chat.id, True)
             msg.reply_text(
                 "Too many warns will now result in a kick! Users will be able to join again after."
@@ -446,9 +442,7 @@ def set_warn_strength(update: Update, args: List[str]):
                     html.escape(chat.title), mention_html(user.id, user.first_name)
                 )
             )
-
-        else:
-            msg.reply_text("I only understand on/yes/no/off!")
+        msg.reply_text("I only understand on/yes/no/off!")
     else:
         limit, soft_warn = sql.get_warn_setting(chat.id)
         if soft_warn:
