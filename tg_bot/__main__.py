@@ -311,45 +311,33 @@ def get_help(update: Update, context: CallbackContext):
 
     # ONLY send help in PM
     if chat.type != chat.PRIVATE:
-        if len(args) >= 2 and any(args[1].lower() == x for x in HELPABLE):
-            module = args[1].lower()
-            update.effective_message.reply_text(
-                f"Contact me in PM to get help of {module.capitalize()}",
-                reply_markup=InlineKeyboardMarkup(
-                    [
-                        [
-                            InlineKeyboardButton(
-                                text="Help",
-                                url="t.me/{}?start=ghelp_{}".format(
-                                    context.bot.username,
-                                    module,
-                                ),
-                            ),
-                        ],
-                    ],
-                ),
-            )
-            return
+
         update.effective_message.reply_text(
-            "Contact me in PM to get the list of possible commands.",
+            "Click the button below to get help menu in your pm.",
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton(
-                            text="Help",
+                            text="Open In Private Chat",
                             url="t.me/{}?start=help".format(context.bot.username),
-                        ),
+                        )
                     ],
-                ],
+                    [
+                        InlineKeyboardButton(
+                            text="Support Chat",
+                            url="https://t.me/{}".format(SUPPORT_CHAT),
+                        )
+                    ]
+                ]
             ),
         )
         return
 
-    if len(args) >= 2 and any(args[1].lower() == x for x in HELPABLE):
+    elif len(args) >= 2 and any(args[1].lower() == x for x in HELPABLE):
         module = args[1].lower()
         text = (
             "Here is the available help for the *{}* module:\n".format(
-                HELPABLE[module].__mod_name__,
+                HELPABLE[module].__mod_name__
             )
             + HELPABLE[module].__help__
         )
@@ -357,12 +345,40 @@ def get_help(update: Update, context: CallbackContext):
             chat.id,
             text,
             InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="⬅️ Back", callback_data="help_back")]],
+                [[InlineKeyboardButton(text="🔙 Back", callback_data="help_back")]]
             ),
         )
 
     else:
         send_help(chat.id, HELP_STRINGS)
+
+
+def gethelp(update: Update, context: CallbackContext):
+    query = update.callback_query
+    if query.data == "gethelp_pr":
+        query.bot.send_message(
+                    query.from_user.id,
+                    text=HELP_STRINGS,
+                    parse_mode=ParseMode.MARKDOWN,
+                    reply_markup=InlineKeyboardMarkup(
+                        paginate_modules(0, HELPABLE, "help")
+                    ),
+                )
+        query.message.edit_text(
+            text="I have sent you the requested information in a private message.", 
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="Go To The Chat",
+                            url=f"telegram.me/{context.bot.username}",
+                            
+                        )
+                    ],
+                    
+                ]
+            ),
+        )
 
 
 def send_settings(chat_id, user_id, user=False):
