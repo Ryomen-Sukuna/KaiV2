@@ -376,6 +376,7 @@ def set_warn_limit(update: Update, context: CallbackContext) -> str:
         msg.reply_text("The current warn limit is {}".format(limit))
     return ""
 
+
 @user_admin
 def set_warn_strength(update: Update, context: CallbackContext):
     args = context.args
@@ -443,7 +444,6 @@ def __chat_settings__(chat_id, user_id):
         f"This chat has `{num_warn_filters}` warn filters. "
         f"It takes `{limit}` warns before the user gets *{'kicked' if soft_warn else 'banned'}*."
     )
-
 
 
 __help__ = """
