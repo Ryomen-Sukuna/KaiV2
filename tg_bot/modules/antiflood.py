@@ -39,7 +39,7 @@ def check_flood(update, context) -> str:
         return ""
 
     # ignore admins and whitelists
-    if is_user_admin(chat, user.id) or user.id in WOLVES:
+    if is_user_admin(chat, user.id) or user.id in WHITELIST_USERS:
         sql.update_flood(chat.id, None)
         return ""
     # ignore approved users
@@ -53,11 +53,11 @@ def check_flood(update, context) -> str:
     try:
         getmode, getvalue = sql.get_flood_setting(chat.id)
         if getmode == 1:
-            chat.kick_member(user.id)
+            chat.ban_member(user.id)
             execstrings = "Banned"
             tag = "BANNED"
         elif getmode == 2:
-            chat.kick_member(user.id)
+            chat.ban_member(user.id)
             chat.unban_member(user.id)
             execstrings = "Kicked"
             tag = "KICKED"
@@ -71,7 +71,7 @@ def check_flood(update, context) -> str:
             tag = "MUTED"
         elif getmode == 4:
             bantime = extract_time(msg, getvalue)
-            chat.kick_member(user.id, until_date=bantime)
+            chat.ban_member(user.id, until_date=bantime)
             execstrings = "Banned for {}".format(getvalue)
             tag = "TBAN"
         elif getmode == 5:
@@ -86,7 +86,7 @@ def check_flood(update, context) -> str:
             tag = "TMUTE"
         send_message(
             update.effective_message,
-            "Beep Boop! Boop Beep!\n{}!".format(execstrings),
+            "Beep Boop! Beep Boop!\n{}!".format(execstrings),
         )
 
         return (
