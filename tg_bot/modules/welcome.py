@@ -209,7 +209,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                 continue
 
             # Welcome Devs
-            elif new_mem.id in DEV_USERS:
+            if new_mem.id in DEV_USERS:
                 update.effective_message.reply_text(
                     "Whoa! A member of the Iron Blood just joined!",
                     reply_to_message_id=reply,
@@ -217,7 +217,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                 continue
 
             # Welcome Sudos
-            elif new_mem.id in SUDO_USERS:
+            if new_mem.id in SUDO_USERS:
                 update.effective_message.reply_text(
                     "Huh! A Sudo Users just joined! Stay Alert!",
                     reply_to_message_id=reply,
@@ -225,7 +225,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                 continue
 
             # Welcome Support
-            elif new_mem.id in SUPPORT_USERS:
+            if new_mem.id in SUPPORT_USERS:
                 update.effective_message.reply_text(
                     "Huh! Someone with a Support Users just joined!",
                     reply_to_message_id=reply,
@@ -233,81 +233,79 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                 continue
 
             # Welcome WHITELIST_USERS
-            elif new_mem.id in WHITELIST_USERS:
+            if new_mem.id in WHITELIST_USERS:
                 update.effective_message.reply_text(
                     "Oof! A Whitelist Users just joined!", reply_to_message_id=reply
                 )
                 continue
 
             # Welcome yourself
-            elif new_mem.id == bot.id:
+            if new_mem.id == bot.id:
                 update.effective_message.reply_text(
                     "Thanks for adding me! Join @ironbloodnations for support.",
                     reply_to_message_id=reply,
                 )
                 continue
+            buttons = sql.get_welc_buttons(chat.id)
+            keyb = build_keyboard(buttons)
+
+            if welc_type not in (sql.Types.TEXT, sql.Types.BUTTON_TEXT):
+                media_wel = True
+
+            first_name = (
+                new_mem.first_name or "PersonWithNoName"
+            )  # edge case of empty name - occurs for some bugs.
+
+            if MessageHandlerChecker.check_user(update.effective_user.id):
+                return
+
+            if cust_welcome:
+                if "%%%" in cust_welcome:
+                    split = cust_welcome.split("%%%")
+                    text = random.choice(split) if all(split) else cust_welcome
+                else:
+                    text = cust_welcome
+
+                if cust_welcome == sql.DEFAULT_WELCOME:
+                    cust_welcome = random.choice(
+                        sql.DEFAULT_WELCOME_MESSAGES
+                    ).format(first=escape_markdown(first_name))
+
+                if new_mem.last_name:
+                    fullname = escape_markdown(f"{first_name} {new_mem.last_name}")
+                else:
+                    fullname = escape_markdown(first_name)
+                count = chat.get_member_count()
+                mention = mention_markdown(new_mem.id, escape_markdown(first_name))
+                if new_mem.username:
+                    username = "@" + escape_markdown(new_mem.username)
+                else:
+                    username = mention
+
+                valid_format = escape_invalid_curly_brackets(
+                    text, VALID_WELCOME_FORMATTERS
+                )
+                res = valid_format.format(
+                    first=escape_markdown(first_name),
+                    last=escape_markdown(new_mem.last_name or first_name),
+                    fullname=escape_markdown(fullname),
+                    username=username,
+                    mention=mention,
+                    count=count,
+                    chatname=escape_markdown(chat.title),
+                    id=new_mem.id,
+                )
 
             else:
-                buttons = sql.get_welc_buttons(chat.id)
-                keyb = build_keyboard(buttons)
-
-                if welc_type not in (sql.Types.TEXT, sql.Types.BUTTON_TEXT):
-                    media_wel = True
-
-                first_name = (
-                    new_mem.first_name or "PersonWithNoName"
-                )  # edge case of empty name - occurs for some bugs.
-
-                if MessageHandlerChecker.check_user(update.effective_user.id):
-                    return
-
-                if cust_welcome:
-                    if "%%%" in cust_welcome:
-                        split = cust_welcome.split("%%%")
-                        text = random.choice(split) if all(split) else cust_welcome
-                    else:
-                        text = cust_welcome
-
-                    if cust_welcome == sql.DEFAULT_WELCOME:
-                        cust_welcome = random.choice(
-                            sql.DEFAULT_WELCOME_MESSAGES
-                        ).format(first=escape_markdown(first_name))
-
-                    if new_mem.last_name:
-                        fullname = escape_markdown(f"{first_name} {new_mem.last_name}")
-                    else:
-                        fullname = escape_markdown(first_name)
-                    count = chat.get_member_count()
-                    mention = mention_markdown(new_mem.id, escape_markdown(first_name))
-                    if new_mem.username:
-                        username = "@" + escape_markdown(new_mem.username)
-                    else:
-                        username = mention
-
-                    valid_format = escape_invalid_curly_brackets(
-                        text, VALID_WELCOME_FORMATTERS
-                    )
-                    res = valid_format.format(
-                        first=escape_markdown(first_name),
-                        last=escape_markdown(new_mem.last_name or first_name),
-                        fullname=escape_markdown(fullname),
-                        username=username,
-                        mention=mention,
-                        count=count,
-                        chatname=escape_markdown(chat.title),
-                        id=new_mem.id,
-                    )
-
-                else:
-                    res = random.choice(sql.DEFAULT_WELCOME_MESSAGES).format(
-                        first=escape_markdown(first_name)
-                    )
-                    keyb = []
-
-                backup_message = random.choice(sql.DEFAULT_WELCOME_MESSAGES).format(
+                res = random.choice(sql.DEFAULT_WELCOME_MESSAGES).format(
                     first=escape_markdown(first_name)
                 )
-                keyboard = InlineKeyboardMarkup(keyb)
+                keyb = []
+
+            backup_message = random.choice(sql.DEFAULT_WELCOME_MESSAGES).format(
+                first=escape_markdown(first_name)
+            )
+            keyboard = InlineKeyboardMarkup(keyb)
 
         else:
             welcome_bool = False
