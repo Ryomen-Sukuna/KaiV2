@@ -243,6 +243,7 @@ def hash_get(update: Update, context: CallbackContext):
     no_hash = fst_word[1:].lower()
     get(update, context, no_hash, show_none=False)
 
+
 @connection_status
 def slash_get(update: Update, context: CallbackContext):
     message, chat_id = update.effective_message.text, update.effective_chat.id
