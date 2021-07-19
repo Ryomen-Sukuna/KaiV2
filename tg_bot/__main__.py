@@ -406,7 +406,7 @@ def send_settings(chat_id, user_id, user=False):
                 "Seems like there aren't any chat settings available :'(\nSend this "
                 "in a group chat you're admin in to find its current settings!",
                 parse_mode=ParseMode.MARKDOWN,
-            )                                        parse_mode=ParseMode.MARKDOWN)
+            )
 
 
 def settings_button(update: Update, context: CallbackContext):

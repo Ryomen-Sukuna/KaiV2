@@ -6,18 +6,18 @@ from telegram.error import BadRequest
 from telegram.ext import CommandHandler, MessageHandler, Filters
 from telegram.utils.helpers import mention_html
 
-import tg_bot.modules.sql.blacklist_sql as sql
-from tg_bot import dispatcher, LOGGER
-from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.chat_status import user_admin, user_not_admin
-from tg_bot.modules.helper_funcs.extraction import extract_text
-from tg_bot.modules.helper_funcs.misc import split_message
-from tg_bot.modules.log_channel import loggable
-from tg_bot.modules.warns import warn
-from tg_bot.modules.helper_funcs.string_handling import extract_time
-from tg_bot.modules.connection import connected
-from tg_bot.modules.sql.approve_sql import is_approved
-from tg_bot.modules.helper_funcs.alternate import send_message, typing_action
+import SaitamaRobot.modules.sql.blacklist_sql as sql
+from SaitamaRobot import dispatcher, LOGGER
+from SaitamaRobot.modules.disable import DisableAbleCommandHandler
+from SaitamaRobot.modules.helper_funcs.chat_status import user_admin, user_not_admin
+from SaitamaRobot.modules.helper_funcs.extraction import extract_text
+from SaitamaRobot.modules.helper_funcs.misc import split_message
+from SaitamaRobot.modules.log_channel import loggable
+from SaitamaRobot.modules.warns import warn
+from SaitamaRobot.modules.helper_funcs.string_handling import extract_time
+from SaitamaRobot.modules.connection import connected
+from SaitamaRobot.modules.sql.approve_sql import is_approved
+from SaitamaRobot.modules.helper_funcs.alternate import send_message, typing_action
 
 BLACKLIST_GROUP = 11
 
@@ -88,13 +88,9 @@ def add_blacklist(update, context):
 
     if len(words) > 1:
         text = words[1]
-<<<<<<< HEAD
         to_blacklist = list(
             {trigger.strip() for trigger in text.split("\n") if trigger.strip()},
         )
-=======
-        to_blacklist = list({trigger.strip() for trigger in text.split("\n") if trigger.strip()})
->>>>>>> 0b70315dc044ab20483f0bffe48e633ae8c75fb4
         for trigger in to_blacklist:
             sql.add_to_blacklist(chat_id, trigger.lower())
 
@@ -144,13 +140,9 @@ def unblacklist(update, context):
 
     if len(words) > 1:
         text = words[1]
-<<<<<<< HEAD
         to_unblacklist = list(
             {trigger.strip() for trigger in text.split("\n") if trigger.strip()},
         )
-=======
-        to_unblacklist = list({trigger.strip() for trigger in text.split("\n") if trigger.strip()})
->>>>>>> 0b70315dc044ab20483f0bffe48e633ae8c75fb4
         successful = 0
         for trigger in to_unblacklist:
             success = sql.rm_from_blacklist(chat_id, trigger.lower())
@@ -249,34 +241,30 @@ def blacklist_mode(update, context):
             sql.set_blacklist_strength(chat_id, 5, "0")
         elif args[0].lower() == "tban":
             if len(args) == 1:
-                teks = """It looks like you tried to set time value for blacklist but you didn't specified time;\
-                          Try, `/blacklistmode tban <timevalue>`.
-                          Examples of time value:\n
-                          4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
+                teks = """It looks like you tried to set time value for blacklist but you didn't specified time; Try, `/blacklistmode tban <timevalue>`.
+
+Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
                 send_message(update.effective_message, teks, parse_mode="markdown")
                 return ""
             restime = extract_time(msg, args[1])
             if not restime:
                 teks = """Invalid time value!
-                          Example of time value:\n
-                          4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
+Example of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
                 send_message(update.effective_message, teks, parse_mode="markdown")
                 return ""
             settypeblacklist = "temporarily ban for {}".format(args[1])
             sql.set_blacklist_strength(chat_id, 6, str(args[1]))
         elif args[0].lower() == "tmute":
             if len(args) == 1:
-                teks = """It looks like you tried to set time value for blacklist but you didn't specified  time;\n
-                          try, `/blacklistmode tmute <timevalue>`.
-                          Examples of time value:\n
-                          4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
+                teks = """It looks like you tried to set time value for blacklist but you didn't specified  time; try, `/blacklistmode tmute <timevalue>`.
+
+Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
                 send_message(update.effective_message, teks, parse_mode="markdown")
                 return ""
             restime = extract_time(msg, args[1])
             if not restime:
                 teks = """Invalid time value!
-                          Examples of time value:\n
-                          4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
+Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
                 send_message(update.effective_message, teks, parse_mode="markdown")
                 return ""
             settypeblacklist = "temporarily mute for {}".format(args[1])
@@ -399,7 +387,7 @@ def del_blacklist(update, context):
                     return
                 elif getmode == 5:
                     message.delete()
-                    chat.ban_member(user.id)
+                    chat.kick_member(user.id)
                     bot.sendMessage(
                         chat.id,
                         f"Banned {user.first_name} for using Blacklisted word: {trigger}",
@@ -408,7 +396,7 @@ def del_blacklist(update, context):
                 elif getmode == 6:
                     message.delete()
                     bantime = extract_time(message, value)
-                    chat.ban_member(user.id, until_date=bantime)
+                    chat.kick_member(user.id, until_date=bantime)
                     bot.sendMessage(
                         chat.id,
                         f"Banned {user.first_name} until '{value}' for using Blacklisted word: {trigger}!",
@@ -459,30 +447,18 @@ def __stats__():
 __mod_name__ = "Blacklists"
 
 __help__ = """
-
-Blacklists are used to stop certain triggers from being said in a group. Any time the trigger is mentioned, the message will immediately be deleted. A good combo is sometimes to pair this up with warn filters!
-
-*NOTE*: Blacklists do not affect group admins.
-
- • `/blacklist`*:* View the current blacklisted words.
-
-Admin only:
- • `/addblacklist <triggers>`*:* Add a trigger to the blacklist. Each line is considered one trigger, so using different lines will allow you to add multiple triggers.
- • `/unblacklist <triggers>`*:* Remove triggers from the blacklist. Same newline logic applies here, so you can remove multiple triggers at once.
- • `/blacklistmode <off/del/warn/ban/kick/mute/tban/tmute>`*:* Action to perform when someone sends blacklisted words.
-
-Blacklist sticker is used to stop certain stickers. Whenever a sticker is sent, the message will be deleted immediately.
-*NOTE:* Blacklist stickers do not affect the group admin
- • `/blsticker`*:* See current blacklisted sticker
-*Only admin:*
- • `/addblsticker <sticker link>`*:* Add the sticker trigger to the black list. Can be added via reply sticker
- • `/unblsticker <sticker link>`*:* Remove triggers from blacklist. The same newline logic applies here, so you can delete multiple triggers at once
- • `/rmblsticker <sticker link>`*:* Same as above
- • `/blstickermode <delete/ban/tban/mute/tmute>`*:* sets up a default action on what to do if users use blacklisted stickers
-Note:
- • `<sticker link>` can be `https://t.me/addstickers/<sticker>` or just `<sticker>` or reply to the sticker message
-
+Blacklists are used to stop certain triggers from being said in a group. Any time the trigger is mentioned, \
+the message will immediately be deleted. A good combo is sometimes to pair this up with warn filters!
+*NOTE:* blacklists do not affect group admins.
+ - /blacklist: View the current blacklisted words.
+*Admin only:*
+ - /addblacklist <triggers>: Add a trigger to the blacklist. Each line is considered one trigger, so using different \
+lines will allow you to add multiple triggers.
+ - /unblacklist <triggers>: Remove triggers from the blacklist. Same newline logic applies here, so you can remove \
+multiple triggers at once.
+ - /rmblacklist <triggers>: Same as above.
 """
+
 BLACKLIST_HANDLER = DisableAbleCommandHandler(
     "blacklist", blacklist, pass_args=True, admin_ok=True,
 )
@@ -490,7 +466,7 @@ ADD_BLACKLIST_HANDLER = CommandHandler("addblacklist", add_blacklist)
 UNBLACKLIST_HANDLER = CommandHandler("unblacklist", unblacklist)
 BLACKLISTMODE_HANDLER = CommandHandler("blacklistmode", blacklist_mode, pass_args=True)
 BLACKLIST_DEL_HANDLER = MessageHandler(
-    (Filters.text | Filters.command | Filters.sticker | Filters.photo) & Filters.chat_type.groups,
+    (Filters.text | Filters.command | Filters.sticker | Filters.photo) & Filters.chat_typs.groups,
     del_blacklist,
     allow_edit=True,
 )

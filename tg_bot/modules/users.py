@@ -2,13 +2,12 @@ from io import BytesIO
 from time import sleep
 
 import tg_bot.modules.sql.users_sql as sql
-from tg_bot import DEV_USERS, log, OWNER_ID, dispatcher
+from tg_bot import DEV_USERS, LOGGER, OWNER_ID, dispatcher
 from tg_bot.modules.helper_funcs.chat_status import dev_plus, sudo_plus
 from tg_bot.modules.sql.users_sql import get_all_users
 from telegram import TelegramError, Update
 from telegram.error import BadRequest
 from telegram.ext import CallbackContext, CommandHandler, Filters, MessageHandler
-
 
 USERS_GROUP = 4
 CHAT_GROUP = 5
@@ -40,11 +39,11 @@ def get_user_id(username):
 
             except BadRequest as excp:
                 if excp.message != "Chat not found":
-                    log.exception("Error extracting user ID")
+                    LOGGER.exception("Error extracting user ID")
 
     return None
 
-    
+
 @dev_plus
 def broadcast(update: Update, context: CallbackContext):
     to_send = update.effective_message.text.split(None, 1)
@@ -89,7 +88,7 @@ def broadcast(update: Update, context: CallbackContext):
         update.effective_message.reply_text(
             f"Broadcast complete.\nGroups failed: {failed}.\nUsers failed: {failed_user}."
         )
-        
+
 
 def log_user(update: Update, context: CallbackContext):
     chat = update.effective_chat
@@ -109,6 +108,7 @@ def log_user(update: Update, context: CallbackContext):
         sql.update_user(msg.forward_from.id, msg.forward_from.username)
 
 
+@sudo_plus
 def chats(update: Update, context: CallbackContext):
     all_chats = sql.get_all_chats() or []
     chatfile = "List of chats.\n0. Chat name | Chat ID | Members count\n"
@@ -126,15 +126,15 @@ def chats(update: Update, context: CallbackContext):
             pass
 
     with BytesIO(str.encode(chatfile)) as output:
-        output.name = "chatlist.txt"
+        output.name = "glist.txt"
         update.effective_message.reply_document(
             document=output,
-            filename="chatlist.txt",
+            filename="glist.txt",
             caption="Here be the list of groups in my database.",
         )
 
-        
- def chat_checker(update: Update, context: CallbackContext):
+
+def chat_checker(update: Update, context: CallbackContext):
     bot = context.bot
     if update.effective_message.chat.get_member(bot.id).can_send_messages is False:
         bot.leaveChat(update.effective_message.chat.id)
@@ -156,13 +156,8 @@ def __stats__():
 def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
-def __gdpr__(user_id):
-    sql.del_user(user_id)
-    
 
 __help__ = ""  # no help string
-
-__mod_name__ = "Users"
 
 BROADCAST_HANDLER = CommandHandler(
     ["broadcastall", "broadcastusers", "broadcastgroups"], broadcast, run_async=True
