@@ -274,7 +274,8 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
             # Welcome WHITELIST_USERS
             if new_mem.id in WHITELIST_USERS:
                 update.effective_chat.send_message(
-                    text="Oof! A Whitelist Users just joined!", reply_to_message_id=reply
+                    text="Oof! A Whitelist Users just joined!",
+                    reply_to_message_id=reply,
                 )
 
             # Welcome yourself
