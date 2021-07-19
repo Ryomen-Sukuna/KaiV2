@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
+import sys
 
 from tg_bot import DB_URI, LOGGER
 
@@ -18,6 +19,6 @@ try:
     SESSION = start()
 except Exception as e:
     LOGGER.exception(f'[PostgreSQL] Failed to connect due to {e}')
-    exit()
+    sys.exit()
    
 LOGGER.info("[PostgreSQL] Connection successful, session started.")
