@@ -418,8 +418,8 @@ __mod_name__ = "Bans"
 __handlers__ = [
     BAN_HANDLER,
     TEMPBAN_HANDLER,
-    kick_HANDLER,
+    KICK_HANDLER,
     UNBAN_HANDLER,
     ROAR_HANDLER,
-    kickME_HANDLER,
+    KICKME_HANDLER,
 ]
