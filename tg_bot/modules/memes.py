@@ -1,5 +1,5 @@
 import random
-from typing import Optional, List 
+from typing import Optional, List
 
 from tg_bot import dispatcher
 import tg_bot.modules.helper_funcs.meme_strings as meme
@@ -12,6 +12,7 @@ def runs(update: Update, context: CallbackContext):
     if update.effective_user.id == 1170714920:
         temp = "Run everyone, they just dropped a bomb 💣💣"
     update.effective_message.reply_text(temp)
+
 
 def slap(update: Update, args: List[str]):
     msg = update.effective_message  # type: Optional[Message]
