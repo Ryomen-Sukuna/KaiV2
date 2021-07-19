@@ -11,7 +11,6 @@ from tg_bot import (
     OWNER_ID,
     SUDO_USERS,
     SUPPORT_USERS,
-    HAPUSSS,
     WHITELIST_USERS,
     dispatcher,
 )
