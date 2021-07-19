@@ -306,6 +306,7 @@ def help_button(update, context):
     except BadRequest:
         pass
 
+
 def get_help(update: Update, context: CallbackContext):
     chat = update.effective_chat  # type: Optional[Chat]
     args = update.effective_message.text.split(None, 1)
