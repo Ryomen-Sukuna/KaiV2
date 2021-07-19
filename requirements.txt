@@ -1,10 +1,14 @@
 future
 emoji
+bleach
 requests
 sqlalchemy
+beautifulsoup4
+alphabet_detector
 python-telegram-bot==13.7
 psycopg2-binary
 feedparser
 spamwatch
+markdown2
 multicolorcaptcha
 pyrate-limiter
