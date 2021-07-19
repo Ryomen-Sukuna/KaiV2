@@ -607,7 +607,7 @@ SpamProtection is the new AI antispam service which makes sure that your chat is
 Uses @Intellivoid's Coffeehouse Artificial Engine. Every ban is checked by real trusty people before being finalized.
 """
 
-SPB_HANDLER = CommandHandler("spb", spb)
+SPB_HANDLER = CommandHandler("spb", spbtoggle)
 GBAN_HANDLER = CommandHandler("gban", gban)
 UNGBAN_HANDLER = CommandHandler("ungban", ungban)
 GBAN_LIST = CommandHandler("gbanlist", gbanlist)
