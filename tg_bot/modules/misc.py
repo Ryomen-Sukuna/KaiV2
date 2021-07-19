@@ -5,8 +5,7 @@ from datetime import datetime
 from typing import Optional, List
 
 import requests
-from telegram import Message, Chat, Update, MessageEntity
-from telegram import ParseMode
+from telegram import ParseMode, Bot, Message, Chat, Update, MessageEntity
 from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 
@@ -229,10 +228,6 @@ IP_HANDLER = CommandHandler(
     "ip", get_bot_ip, filters=Filters.chat(OWNER_ID), run_async=True
 )
 
-TIME_HANDLER = CommandHandler("time", get_time, pass_args=True, run_async=True)
-
-RUNS_HANDLER = DisableAbleCommandHandler("runs", runs, run_async=True)
-SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True, run_async=True)
 INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True, run_async=True)
 
 ECHO_HANDLER = CommandHandler(
@@ -249,9 +244,6 @@ GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private, run_async=T
 
 dispatcher.add_handler(ID_HANDLER)
 dispatcher.add_handler(IP_HANDLER)
-# dispatcher.add_handler(TIME_HANDLER)
-dispatcher.add_handler(RUNS_HANDLER)
-dispatcher.add_handler(SLAP_HANDLER)
 dispatcher.add_handler(INFO_HANDLER)
 dispatcher.add_handler(ECHO_HANDLER)
 dispatcher.add_handler(MD_HELP_HANDLER)
