@@ -9,7 +9,7 @@ from tg_bot import (
     DEV_USERS,
     GBAN_LOGS,
     OWNER_ID,
-    LOGGER,
+    log,
     SUDO_USERS,
     SUPPORT_USERS,
     WHITELIST_USERS,
@@ -256,7 +256,7 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
             pass
 
     if GBAN_LOGS:
-        LOGGER.edit_text(
+        log.edit_text(
             log_message + f"\n<b>Chats affected:</b> <code>{gbanned_chats}</code>",
             parse_mode=ParseMode.HTML,
         )
@@ -380,7 +380,7 @@ def ungban(update: Update, context: CallbackContext):  # sourcery no-metrics
     sql.ungban_user(user_id)
 
     if GBAN_LOGS:
-        LOGGER.edit_text(
+        log.edit_text(
             log_message + f"\n<b>Chats affected:</b> {ungbanned_chats}",
             parse_mode=ParseMode.HTML,
         )
@@ -457,9 +457,9 @@ def check_and_ban(update, user_id, should_message=True):
                                 parse_mode=ParseMode.HTML,
                             )
                 except BaseException:
-                    LOGGER.warning("Spam Protection API is unreachable.")
+                    log.warning("Spam Protection API is unreachable.")
         except BaseException as e:
-            LOGGER.info(f"SpamProtection was disabled due to {e}")
+            log.info(f"SpamProtection was disabled due to {e}")
     try:
         sw_ban = sw.get_ban(int(user_id))
     except AttributeError:
@@ -472,7 +472,7 @@ def check_and_ban(update, user_id, should_message=True):
         Forbidden,
         TooManyRequests,
     ) as e:
-        LOGGER.warning(f" SpamWatch Error: {e}")
+        log.warning(f" SpamWatch Error: {e}")
         sw_ban = None
 
     if sw_ban:

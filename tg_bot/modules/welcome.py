@@ -7,12 +7,12 @@ from io import BytesIO
 import tg_bot.modules.sql.welcome_sql as sql
 from tg_bot import (
     DEV_USERS,
-    LOGGER,
     OWNER_ID,
     SUDO_USERS,
     SUPPORT_USERS,
     WHITELIST_USERS,
     sw,
+    log,
     dispatcher,
 )
 from tg_bot.modules.helper_funcs.chat_status import (
@@ -138,9 +138,9 @@ def send(update, message, keyboard, backup_message):
                 reply_to_message_id=reply,
             )
 
-            LOGGER.warning(message)
-            LOGGER.warning(keyboard)
-            LOGGER.exception("Could not parse! got invalid url host errors")
+            log.warning(message)
+            log.warning(keyboard)
+            log.exception("Could not parse! got invalid url host errors")
         else:
             msg = update.effective_message.reply_text(
                 markdown_parser(
@@ -153,7 +153,7 @@ def send(update, message, keyboard, backup_message):
                 reply_to_message_id=reply,
             )
 
-            LOGGER.exception()
+            log.exception()
     return msg
 
 

@@ -6,7 +6,7 @@ from telegram.error import BadRequest
 from telegram.ext import CommandHandler, run_async
 
 import tg_bot.modules.sql.notes_sql as sql
-from tg_bot import dispatcher, LOGGER, OWNER_ID, JOIN_LOGGER
+from tg_bot import dispatcher, log, OWNER_ID, MESSAGE_DUMP
 from tg_bot.__main__ import DATA_IMPORT
 from tg_bot.modules.helper_funcs.chat_status import user_admin
 from tg_bot.modules.helper_funcs.alternate import typing_action
@@ -100,7 +100,7 @@ def import_data(update, context):
                 f"An error occurred while recovering your data. The process failed. If you experience a problem with this, please take it to @ironbloodnations",
             )
 
-            LOGGER.exception(
+            log.exception(
                 "Imprt for the chat %s with the name %s failed.",
                 str(chat.id),
                 str(chat.title),
@@ -336,7 +336,7 @@ def export_data(update, context):
     tgl = time.strftime("%H:%M:%S - %d/%m/%Y", time.localtime(time.time()))
     try:
         context.bot.sendMessage(
-            JOIN_LOGGER,
+            MESSAGE_DUMP,
             "*Successfully imported backup:*\nChat: `{}`\nChat ID: `{}`\nOn: `{}`".format(
                 chat.title,
                 chat_id,

@@ -1,7 +1,7 @@
 import html
 from typing import Optional
 
-from tg_bot import LOGGER, dispatcher
+from tg_bot import log, dispatcher
 from tg_bot.modules.helper_funcs.chat_status import (
     bot_admin,
     can_restrict,
@@ -221,8 +221,8 @@ def temp_mute(update: Update, context: CallbackContext) -> str:
             # Do not reply
             message.reply_text(f"Muted for {time_val}!", quote=False)
             return log
-        LOGGER.warning(update)
-        LOGGER.exception(
+        log.warning(update)
+        log.exception(
             "ERROR muting user %s in chat %s (%s) due to %s",
             user_id,
             chat.title,

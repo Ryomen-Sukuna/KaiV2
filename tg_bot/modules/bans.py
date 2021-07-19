@@ -7,7 +7,7 @@ from telegram.utils.helpers import mention_html
 
 from tg_bot import (
     DEV_USERS,
-    LOGGER,
+    log,
     OWNER_ID,
     SUDO_USERS,
     SUPPORT_USERS,
@@ -123,8 +123,8 @@ def ban(update: Update, context: CallbackContext) -> str:
                 return log
             message.reply_text("Banned!", quote=False)
             return log
-        LOGGER.warning(update)
-        LOGGER.exception(
+        log.warning(update)
+        log.exception(
             "ERROR banning user %s in chat %s (%s) due to %s",
             user_id,
             chat.title,
@@ -211,8 +211,8 @@ def temp_ban(update: Update, context: CallbackContext) -> str:
                 quote=False,
             )
             return log
-        LOGGER.warning(update)
-        LOGGER.exception(
+        log.warning(update)
+        log.exception(
             "ERROR banning user %s in chat %s (%s) due to %s",
             user_id,
             chat.title,

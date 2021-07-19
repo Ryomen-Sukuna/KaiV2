@@ -9,7 +9,7 @@ from telegram.utils.helpers import mention_html
 from alphabet_detector import AlphabetDetector
 
 import tg_bot.modules.sql.locks_sql as sql
-from tg_bot import dispatcher, SUDO_USERS, LOGGER
+from tg_bot import dispatcher, log, SUDO_USERS
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.chat_status import (
     can_delete,
@@ -378,7 +378,7 @@ def del_lockables(update, context):
                             if excp.message == "Message to delete not found":
                                 pass
                             else:
-                                LOGGER.exception("ERROR in lockables")
+                                log.exception("ERROR in lockables")
                         break
                 if message.text:
                     check = ad.detect_alphabet(u"{}".format(message.text))
@@ -387,7 +387,7 @@ def del_lockables(update, context):
                             message.delete()
                         except BadRequest as excp:
                             if excp.message != "Message to delete not found":
-                                LOGGER.exception("ERROR in lockables")
+                                log.exception("ERROR in lockables")
                         break
             continue
         if lockable == "button":
@@ -401,7 +401,7 @@ def del_lockables(update, context):
                     message.delete()
                 except BadRequest as excp:
                     if excp.message != "Message to delete not found":
-                        LOGGER.exception("ERROR in lockables")
+                        log.exception("ERROR in lockables")
                 break
             continue
         if lockable == "inline":
@@ -415,7 +415,7 @@ def del_lockables(update, context):
                     message.delete()
                 except BadRequest as excp:
                     if excp.message != "Message to delete not found":
-                        LOGGER.exception("ERROR in lockables")
+                        log.exception("ERROR in lockables")
                 break
             continue
         if (
@@ -446,7 +446,7 @@ def del_lockables(update, context):
                     message.delete()
                 except BadRequest as excp:
                     if excp.message != "Message to delete not found":
-                        LOGGER.exception("ERROR in lockables")
+                        log.exception("ERROR in lockables")
 
                 break
 

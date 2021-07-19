@@ -14,7 +14,7 @@ from telegram.ext import (
 )
 from telegram.utils.helpers import mention_html, escape_markdown
 
-from tg_bot import dispatcher, LOGGER, SUDO_USERS
+from tg_bot import dispatcher, log, SUDO_USERS
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.handlers import MessageHandlerChecker
 from tg_bot.modules.helper_funcs.chat_status import user_admin
@@ -326,7 +326,7 @@ def reply_filter(update, context):
                                     "Message couldn't be sent, Is the sticker id valid?",
                                 )
                                 return
-                            LOGGER.exception("Error in filters: " + excp.message)
+                            log.exception("Error in filters: " + excp.message)
                             return
                     valid_format = escape_invalid_curly_brackets(
                         text,
@@ -377,14 +377,14 @@ def reply_filter(update, context):
                             reply_markup=keyboard,
                         )
                     except BadRequest as excp:
-                        LOGGER.exception("Error in filters: " + excp.message)
+                        log.exception("Error in filters: " + excp.message)
                         try:
                             send_message(
                                 update.effective_message,
                                 get_exception(excp, filt, chat),
                             )
                         except BadRequest as excp:
-                            LOGGER.exception(
+                            log.exception(
                                 "Failed to send message: " + excp.message,
                             )
                 elif ENUM_FUNC_MAP[filt.file_type] == dispatcher.bot.send_sticker:
@@ -438,7 +438,7 @@ def reply_filter(update, context):
                                 "again...",
                             )
                         except BadRequest as excp:
-                            LOGGER.exception("Error in filters: " + excp.message)
+                            log.exception("Error in filters: " + excp.message)
                     elif excp.message == "Reply message not found":
                         try:
                             context.bot.send_message(
@@ -449,7 +449,7 @@ def reply_filter(update, context):
                                 reply_markup=keyboard,
                             )
                         except BadRequest as excp:
-                            LOGGER.exception("Error in filters: " + excp.message)
+                            log.exception("Error in filters: " + excp.message)
                     else:
                         try:
                             send_message(
@@ -457,11 +457,11 @@ def reply_filter(update, context):
                                 "This message couldn't be sent as it's incorrectly formatted.",
                             )
                         except BadRequest as excp:
-                            LOGGER.exception("Error in filters: " + excp.message)
-                        LOGGER.warning(
+                            log.exception("Error in filters: " + excp.message)
+                        log.warning(
                             "Message %s could not be parsed", str(filt.reply)
                         )
-                        LOGGER.exception(
+                        log.exception(
                             "Could not parse filter %s in chat %s",
                             str(filt.keyword),
                             str(chat.id),
@@ -472,7 +472,7 @@ def reply_filter(update, context):
                 try:
                     send_message(update.effective_message, filt.reply)
                 except BadRequest as excp:
-                    LOGGER.exception("Error in filters: " + excp.message)
+                    log.exception("Error in filters: " + excp.message)
             break
 
 
@@ -547,8 +547,8 @@ def get_exception(excp, filt, chat):
         return "You seem to be trying to use the URL protocol which is not supported. Telegram does not support key for multiple protocols, such as tg: //. Please try again!"
     if excp.message == "Reply message not found":
         return "noreply"
-    LOGGER.warning("Message %s could not be parsed", str(filt.reply))
-    LOGGER.exception(
+    log.warning("Message %s could not be parsed", str(filt.reply))
+    log.exception(
         "Could not parse filter %s in chat %s",
         str(filt.keyword),
         str(chat.id),

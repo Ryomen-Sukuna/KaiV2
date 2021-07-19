@@ -31,7 +31,7 @@ from tg_bot import (
     CERT_PATH,
     PORT,
     URL,
-    LOGGER,
+    log,
     ALLOW_EXCL,
 )
 
@@ -498,7 +498,7 @@ def settings_button(update: Update, context: CallbackContext):
             "Query_id_invalid",
             "Message can't be deleted",
         ]:
-            LOGGER.exception("Exception in settings buttons. %s", str(query.data))
+            log.exception("Exception in settings buttons. %s", str(query.data))
 
 
 def get_settings(update: Update, context: CallbackContext):
@@ -548,11 +548,11 @@ def migrate_chats(update: Update, _):
     else:
         return
 
-    LOGGER.info("Migrating from %s, to %s", str(old_chat), str(new_chat))
+    log.info("Migrating from %s, to %s", str(old_chat), str(new_chat))
     for mod in MIGRATEABLE:
         mod.__migrate__(old_chat, new_chat)
 
-    LOGGER.info("Successfully migrated!")
+    log.info("Successfully migrated!")
     raise DispatcherHandlerStop
 
 
@@ -581,7 +581,7 @@ def main():
     # dispatcher.add_error_handler(error_callback)
 
     if WEBHOOK:
-        LOGGER.info("Using webhooks.")
+        log.info("Using webhooks.")
         updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
 
         if CERT_PATH:
@@ -590,7 +590,7 @@ def main():
             updater.bot.set_webhook(url=URL + TOKEN)
 
     else:
-        LOGGER.info("Using long polling.")
+        log.info("Using long polling.")
         updater.start_polling(
             allowed_updates=Update.ALL_TYPES,
             timeout=15,
@@ -602,5 +602,5 @@ def main():
 
 
 if __name__ == "__main__":
-    LOGGER.info("Successfully loaded modules: " + str(ALL_MODULES))
+    log.info("Successfully loaded modules: " + str(ALL_MODULES))
     main()

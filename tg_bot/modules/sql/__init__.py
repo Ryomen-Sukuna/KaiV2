@@ -3,12 +3,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 import sys
 
-from tg_bot import DB_URI, LOGGER
+from tg_bot import DB_URI, log
 
 
 def start() -> scoped_session:
     engine = create_engine(DB_URI, client_encoding="utf8")
-    LOGGER.info("[PostgreSQL] Connecting to database......")
+    log.info("[PostgreSQL] Connecting to database......")
     BASE.metadata.bind = engine
     BASE.metadata.create_all(engine)
     return scoped_session(sessionmaker(bind=engine, autoflush=False))
@@ -18,7 +18,7 @@ BASE = declarative_base()
 try:
     SESSION = start()
 except Exception as e:
-    LOGGER.exception(f"[PostgreSQL] Failed to connect due to {e}")
+    log.exception(f"[PostgreSQL] Failed to connect due to {e}")
     sys.exit()
 
-LOGGER.info("[PostgreSQL] Connection successful, session started.")
+log.info("[PostgreSQL] Connection successful, session started.")
