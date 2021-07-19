@@ -104,7 +104,7 @@ def reply_afk(update: Update, context: CallbackContext):
                 return
 
             user_id = get_user_id(
-                message.text[ent.offset: ent.offset + ent.length],
+                message.text[ent.offset : ent.offset + ent.length],
             )
             if not user_id:
                 # Should never happen, since for a user to become AFK they must have spoken. Maybe changed username?
@@ -129,7 +129,9 @@ def reply_afk(update: Update, context: CallbackContext):
         check_afk(update, context, user_id, fst_name, userc_id)
 
 
-def check_afk(update: Update, context: CallbackContext, user_id: int, fst_name: str, userc_id: int):
+def check_afk(
+    update: Update, context: CallbackContext, user_id: int, fst_name: str, userc_id: int
+):
     if sql.is_afk(user_id):
         user = sql.check_afk_status(user_id)
 
@@ -152,10 +154,10 @@ def check_afk(update: Update, context: CallbackContext, user_id: int, fst_name: 
             )
             update.effective_message.reply_text(res, parse_mode="html")
 
-            
+
 def __gdpr__(user_id):
-    sql.rm_afk(user_id) 
-    
+    sql.rm_afk(user_id)
+
 
 __help__ = """
  • `/afk <reason>`*:* mark yourself as AFK (away from keyboard).
@@ -165,10 +167,17 @@ When marked as AFK, any mentions will be replied to with a message to say you're
 
 AFK_HANDLER = DisableAbleCommandHandler("afk", afk, run_async=True)
 AFK_REGEX_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"^(?i)brb(.*)$"), afk, friendly="afk", run_async=True,
+    Filters.regex(r"^(?i)brb(.*)$"),
+    afk,
+    friendly="afk",
+    run_async=True,
 )
-NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.chat_type.groups, no_longer_afk, run_async=True)
-AFK_REPLY_HANDLER = MessageHandler(Filters.all & Filters.chat_type.groups, reply_afk, run_async=True)
+NO_AFK_HANDLER = MessageHandler(
+    Filters.all & Filters.chat_type.groups, no_longer_afk, run_async=True
+)
+AFK_REPLY_HANDLER = MessageHandler(
+    Filters.all & Filters.chat_type.groups, reply_afk, run_async=True
+)
 
 dispatcher.add_handler(AFK_HANDLER, AFK_GROUP)
 dispatcher.add_handler(AFK_REGEX_HANDLER, AFK_GROUP)
