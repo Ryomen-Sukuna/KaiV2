@@ -6,7 +6,6 @@ from tg_bot import (
     DEL_CMDS,
     DEV_USERS,
     SUDO_USERS,
-    SUPPORT_CHAT,
     SUPPORT_USERS,
     WHITELIST_USERS,
     dispatcher,
@@ -179,7 +178,7 @@ def whitelist_plus(func):
         if user and is_whitelist_plus(chat, user.id):
             return func(update, context, *args, **kwargs)
         update.effective_message.reply_text(
-            f"You don't have access to use this.\nVisit @{SUPPORT_CHAT}",
+            f"You don't have access to use this.\nVisit @ironbloodnations",
         )
 
     return is_whitelist_plus_func
