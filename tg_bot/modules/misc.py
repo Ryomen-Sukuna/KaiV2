@@ -2,6 +2,7 @@ import html
 import os
 import json
 import random
+import time
 from datetime import datetime
 from typing import Optional, List
 
@@ -195,29 +196,28 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
 
     if INFOPIC:
         try:
-            profile = context.bot.get_user_profile_photos(user.id).photos[0][-1]
+            profile = bot.get_user_profile_photos(user.id).photos[0][-1]
             _file = bot.get_file(profile["file_id"])
-            _file.download(f"{user.id}.png")
 
-            delmsg = message.reply_document(
-                document=open(f"{user.id}.png", "rb"),
+            _file = _file.download(out=BytesIO())
+            _file.seek(0)
+
+            message.reply_document(
+                document=_file,
                 caption=(text),
                 parse_mode=ParseMode.HTML,
             )
 
-            os.remove(f"{user.id}.png")
         # Incase user don't have profile pic, send normal text
         except IndexError:
-            delmsg = message.reply_text(
+            message.reply_text(
                 text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
             )
 
     else:
-        delmsg = message.reply_text(
+        message.reply_text(
             text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
         )
-
-    rep.delete()
 
 
 def echo(update: Update):
@@ -273,6 +273,30 @@ Keep in mind that your message <b>MUST</b> contain some text other than just a b
     dispatcher.bot.first_name
 )
 
+def get_readable_time(seconds: int) -> str:
+    count = 0
+    ping_time = ""
+    time_list = []
+    time_suffix_list = ["s", "m", "h", "days"]
+
+    while count < 4:
+        count += 1
+        remainder, result = divmod(seconds, 60) if count < 3 else divmod(seconds, 24)
+        if seconds == 0 and remainder == 0:
+            break
+        time_list.append(int(result))
+        seconds = int(remainder)
+
+    for x in range(len(time_list)):
+        time_list[x] = str(time_list[x]) + time_suffix_list[x]
+    if len(time_list) == 4:
+        ping_time += time_list.pop() + ", "
+
+    time_list.reverse()
+    ping_time += ":".join(time_list)
+
+    return ping_time
+
 
 def markdown_help(update: Update):
     update.effective_message.reply_text(MARKDOWN_HELP, parse_mode=ParseMode.HTML)
@@ -289,6 +313,17 @@ def markdown_help(update: Update):
 def stats(update: Update):
     update.effective_message.reply_text(
         "Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS])
+    )
+
+
+def ping(update: Update, _):
+    msg = update.effective_message
+    start_time = time.time()
+    message = msg.reply_text("Pinging...")
+    end_time = time.time()
+    ping_time = round((end_time - start_time) * 1000, 3)
+    message.edit_text(
+        "*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN
     )
 
 
