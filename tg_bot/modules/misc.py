@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Optional, List
 
 import requests
-from telegram import ParseMode, Bot, Message, Chat, Update, MessageEntity
+from telegram import Update, MessageEntity
 from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 
@@ -32,111 +32,187 @@ def get_bot_ip(update: Update):
     update.message.reply_text(res.text)
 
 
-def get_id(update: Update, args: List[str]):
-    user_id = extract_user(update.effective_message, args)
+def get_id(update: Update, context: CallbackContext):
+    bot, args = context.bot, context.args
+    message = update.effective_message
+    chat = update.effective_chat
+    msg = update.effective_message
+    user_id = extract_user(msg, args)
+
     if user_id:
-        if (
-            update.effective_message.reply_to_message
-            and update.effective_message.reply_to_message.forward_from
-        ):
-            user1 = update.effective_message.reply_to_message.from_user
-            user2 = update.effective_message.reply_to_message.forward_from
-            update.effective_message.reply_text(
-                "The original sender, {}, has an ID of `{}`.\nThe forwarder, {}, has an ID of `{}`.".format(
-                    escape_markdown(user2.first_name),
-                    user2.id,
-                    escape_markdown(user1.first_name),
-                    user1.id,
-                ),
-                parse_mode=ParseMode.MARKDOWN,
+
+        if msg.reply_to_message and msg.reply_to_message.forward_from:
+
+            user1 = message.reply_to_message.from_user
+            user2 = message.reply_to_message.forward_from
+
+            msg.reply_text(
+                f"<b>Telegram ID:</b>,"
+                f"• {html.escape(user2.first_name)} - <code>{user2.id}</code>.\n"
+                f"• {html.escape(user1.first_name)} - <code>{user1.id}</code>.",
+                parse_mode=ParseMode.HTML,
             )
+
         else:
+
             user = bot.get_chat(user_id)
-            update.effective_message.reply_text(
-                "{}'s id is `{}`.".format(escape_markdown(user.first_name), user.id),
-                parse_mode=ParseMode.MARKDOWN,
+            msg.reply_text(
+                f"{html.escape(user.first_name)}'s id is <code>{user.id}</code>.",
+                parse_mode=ParseMode.HTML,
             )
+
     else:
-        chat = update.effective_chat  # type: Optional[Chat]
+
         if chat.type == "private":
-            update.effective_message.reply_text(
-                "Your id is `{}`.".format(chat.id), parse_mode=ParseMode.MARKDOWN
+            msg.reply_text(
+                f"Your id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
             )
 
         else:
-            update.effective_message.reply_text(
-                "This group's id is `{}`.".format(chat.id),
-                parse_mode=ParseMode.MARKDOWN,
+            msg.reply_text(
+                f"This group's id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
             )
 
 
-def info(update: Update, args: List[str]):
-    msg = update.effective_message  # type: Optional[Message]
+def gifid(update: Update, _):
+    msg = update.effective_message
+    if msg.reply_to_message and msg.reply_to_message.animation:
+        update.effective_message.reply_text(
+            f"Gif ID:\n<code>{msg.reply_to_message.animation.file_id}</code>",
+            parse_mode=ParseMode.HTML,
+        )
+    else:
+        update.effective_message.reply_text("Please reply to a gif to get its ID.")
+
+
+def info(update: Update, context: CallbackContext):  # sourcery no-metrics
+    bot = context.bot
+    args = context.args
+    message = update.effective_message
+    chat = update.effective_chat
     user_id = extract_user(update.effective_message, args)
 
     if user_id:
         user = bot.get_chat(user_id)
 
-    elif not msg.reply_to_message and not args:
-        user = msg.from_user
+    elif not message.reply_to_message and not args:
+        user = message.from_user
 
-    elif not msg.reply_to_message and (
+    elif not message.reply_to_message and (
         not args
         or (
             len(args) >= 1
             and not args[0].startswith("@")
             and not args[0].isdigit()
-            and not msg.parse_entities([MessageEntity.TEXT_MENTION])
+            and not message.parse_entities([MessageEntity.TEXT_MENTION])
         )
     ):
-        msg.reply_text("I can't extract a user from this.")
+        message.reply_text("I can't extract a user from this.")
         return
 
     else:
         return
 
     text = (
-        "<b>User info</b>:"
-        "\nID: <code>{}</code>"
-        "\nFirst Name: {}".format(user.id, html.escape(user.first_name))
+        f"<b>General:</b>\n"
+        f"ID: <code>{user.id}</code>\n"
+        f"First Name: {html.escape(user.first_name)}"
     )
 
     if user.last_name:
-        text += "\nLast Name: {}".format(html.escape(user.last_name))
+        text += f"\nLast Name: {html.escape(user.last_name)}"
 
     if user.username:
-        text += "\nUsername: @{}".format(html.escape(user.username))
+        text += f"\nUsername: @{html.escape(user.username)}"
 
-    text += "\nPermanent user link: {}".format(mention_html(user.id, "link"))
+    text += f"\nPermanent user link: {mention_html(user.id, 'link')}"
+
+    try:
+        spamwtc = sw.get_ban(int(user.id))
+        if spamwtc:
+            text += "<b>\n\nSpamWatch:\n</b>"
+            text += "<b>This person is banned in Spamwatch!</b>"
+            text += f"\nReason: <pre>{spamwtc.reason}</pre>"
+            text += "\nAppeal at @SpamWatchSupport"
+        else:
+            text += "<b>\n\nSpamWatch:</b>\n Not banned"
+    except:
+        pass  # don't crash if api is down somehow...
+
+    Nation_level_present = False
+
+    num_chats = sql.get_user_num_chats(user.id)
+    text += f"\n<b>Chat count</b>: <code>{num_chats}</code>"
+
+    try:
+        user_member = chat.get_member(user.id)
+        if user_member.status == "administrator":
+            result = requests.post(
+                f"https://api.telegram.org/bot{TOKEN}/getChatMember?chat_id={chat.id}&user_id={user.id}"
+            )
+            result = result.json()["result"]
+            if "custom_title" in result.keys():
+                custom_title = result["custom_title"]
+                text += f"\nThis user holds the title <b>{custom_title}</b> here."
+    except BadRequest:
+        pass
 
     if user.id == OWNER_ID:
-        text += "\n\nThis person is my owner - I would never do anything against them!"
-    else:
-        if user.id in SUDO_USERS:
-            text += (
-                "\nThis person is one of my sudo users! "
-                "Nearly as powerful as my owner - so watch it."
-            )
-        else:
-            if user.id in SUPPORT_USERS:
-                text += (
-                    "\nThis person is one of my support users! "
-                    "Not quite a sudo user, but can still gban you off the map."
-                )
+        text += f"\nThis person is my owner"
+        Super_user_present = True
+    elif user.id in DEV_USERS:
+        text += f"\nThis Person is a part of Eagle Union"
+        Super_user_present = True
+    elif user.id in SUDO_USERS:
+        text += f"\nThe Nation level of this person is Royal"
+        Super_user_present = True
+    elif user.id in SUPPORT_USERS:
+        text += f"\nThe Nation level of this person is Sakura"
+        Super_user_present = True
+    elif user.id in WHITELIST_USERS:
+        text += f"\nThe Nation level of this person is Neptunia"
+        Super_user_present = True
 
-            if user.id in WHITELIST_USERS:
-                text += (
-                    "\nThis person has been whitelisted! "
-                    "That means I'm not allowed to ban/kick them."
-                )
+    if super_user_present:
+        text += ' [<a href="https://t.me/{}?start=nations">?</a>]'.format(bot.username)
 
+    text += "\n"
     for mod in USER_INFO:
-        mod_info = mod.__user_info__(user.id).strip()
+        if mod.__mod_name__ == "Users":
+            continue
+
+        try:
+            mod_info = mod.__user_info__(user.id)
+        except TypeError:
+            mod_info = mod.__user_info__(user.id, chat.id)
         if mod_info:
-            text += "\n\n" + mod_info
+            text += "\n" + mod_info
 
-    update.effective_message.reply_text(text, parse_mode=ParseMode.HTML)
+    if INFOPIC:
+        try:
+            profile = context.bot.get_user_profile_photos(user.id).photos[0][-1]
+            _file = bot.get_file(profile["file_id"])
+            _file.download(f"{user.id}.png")
 
+            delmsg = message.reply_document(
+                document=open(f"{user.id}.png", "rb"),
+                caption=(text),
+                parse_mode=ParseMode.HTML,
+            )
+
+            os.remove(f"{user.id}.png")
+        # Incase user don't have profile pic, send normal text
+        except IndexError:
+            delmsg = message.reply_text(
+                text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
+            )
+
+    else:
+        delmsg = message.reply_text(
+            text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
+        )
+
+    rep.delete()
 
 def echo(update: Update):
     args = update.effective_message.text.split(None, 1)
