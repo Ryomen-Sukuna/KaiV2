@@ -124,7 +124,7 @@ def send(update, message, keyboard, backup_message):
             pass
         reply = False
     try:
-        msg = update.effective_message.reply_text(
+        msg = update.effective_chat.send_message(
             message,
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=keyboard,
@@ -132,7 +132,7 @@ def send(update, message, keyboard, backup_message):
         )
     except BadRequest as excp:
         if excp.message == "Button_url_invalid":
-            msg = update.effective_message.reply_text(
+            msg = update.effective_chat.send_message(
                 markdown_parser(
                     (
                         backup_message
@@ -146,7 +146,7 @@ def send(update, message, keyboard, backup_message):
         elif excp.message == "Have no rights to send a message":
             return
         elif excp.message == "Reply message not found":
-            msg = update.effective_message.reply_text(
+            msg = update.effective_chat.send_message(
                 message,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=keyboard,
@@ -154,7 +154,7 @@ def send(update, message, keyboard, backup_message):
             )
 
         elif excp.message == "Unsupported url protocol":
-            msg = update.effective_message.reply_text(
+            msg = update.effective_chat.send_message(
                 markdown_parser(
                     (
                         backup_message
@@ -166,7 +166,7 @@ def send(update, message, keyboard, backup_message):
             )
 
         elif excp.message == "Wrong url host":
-            msg = update.effective_message.reply_text(
+            msg = update.effective_chat.send_message(
                 markdown_parser(
                     (
                         backup_message
@@ -181,7 +181,7 @@ def send(update, message, keyboard, backup_message):
             log.warning(keyboard)
             log.exception("Could not parse! got invalid url host errors")
         else:
-            msg = update.effective_message.reply_text(
+            msg = update.effective_chat.send_message(
                 markdown_parser(
                     (
                         backup_message
@@ -241,8 +241,8 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
 
             # Give the owner a special welcome
             if new_mem.id == OWNER_ID:
-                update.effective_message.reply_text(
-                    "Oh hi, my creator.", reply_to_message_id=reply
+                update.effective_chat.send_message(
+                    text="Oh hi, my creator.", reply_to_message_id=reply
                 )
                 welcome_log = (
                     f"{html.escape(chat.title)}\n"
@@ -252,35 +252,35 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
 
             # Welcome Devs
             if new_mem.id in DEV_USERS:
-                update.effective_message.reply_text(
-                    "Whoa! A member of the Iron Blood just joined!",
+                update.effective_chat.send_message(
+                    text="Whoa! A member of the Iron Blood just joined!",
                     reply_to_message_id=reply,
                 )
 
             # Welcome Sudos
             if new_mem.id in SUDO_USERS:
-                update.effective_message.reply_text(
-                    "Huh! A Sudo Users just joined! Stay Alert!",
+                update.effective_chat.send_message(
+                    text="Huh! A Sudo Users just joined! Stay Alert!",
                     reply_to_message_id=reply,
                 )
 
             # Welcome Support
             if new_mem.id in SUPPORT_USERS:
-                update.effective_message.reply_text(
-                    "Huh! Someone with a Support Users just joined!",
+                update.effective_chat.send_message(
+                    text="Huh! Someone with a Support Users just joined!",
                     reply_to_message_id=reply,
                 )
 
             # Welcome WHITELIST_USERS
             if new_mem.id in WHITELIST_USERS:
-                update.effective_message.reply_text(
-                    "Oof! A Whitelist Users just joined!", reply_to_message_id=reply
+                update.effective_chat.send_message(
+                    text="Oof! A Whitelist Users just joined!", reply_to_message_id=reply
                 )
 
             # Welcome yourself
             if new_mem.id == bot.id:
-                update.effective_message.reply_text(
-                    "Thanks for adding me! Join @ironbloodnations for support.",
+                update.effective_chat.send_message(
+                    text="Thanks for adding me! Join @ironbloodnations for support.",
                     reply_to_message_id=reply,
                 )
             buttons = sql.get_welc_buttons(chat.id)
@@ -412,7 +412,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                 new_join_mem = (
                     f"[{escape_markdown(new_mem.first_name)}](tg://user?id={user.id})"
                 )
-                message = msg.reply_text(
+                message = bot.send_message(
                     f"{new_join_mem}, click the button below to prove you're human.\nYou have 120 seconds.",
                     reply_markup=InlineKeyboardMarkup(
                         [
@@ -515,7 +515,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                 if to_append:
                     btn.append(to_append)
 
-                message = msg.reply_photo(
+                message = bot.send_photo(
                     fileobj,
                     caption=f"Welcome [{escape_markdown(new_mem.first_name)}](tg://user?id={user.id}). Click the correct button to get unmuted!",
                     reply_markup=InlineKeyboardMarkup(btn),
@@ -544,7 +544,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                         chat.id,
                         cust_content,
                         reply_markup=keyboard,
-                        reply_to_message_id=reply,
+                        reply_to_message_id=None,
                     )
                 else:
                     sent = ENUM_FUNC_MAP[welc_type](
@@ -552,7 +552,7 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                         cust_content,
                         caption=res,
                         reply_markup=keyboard,
-                        reply_to_message_id=reply,
+                        reply_to_message_id=None,
                         parse_mode="markdown",
                     )
             else:
