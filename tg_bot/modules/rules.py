@@ -1,18 +1,23 @@
 from typing import Optional
 
-from telegram import Message, Update,
-from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters
-from telegram.utils.helpers import escape_markdown
-
 import tg_bot.modules.sql.rules_sql as sql
 from tg_bot import dispatcher
 from tg_bot.modules.helper_funcs.chat_status import user_admin
 from tg_bot.modules.helper_funcs.string_handling import markdown_parser
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    ParseMode,
+    Update,
+    User,
+)
+from telegram.error import BadRequest
+from telegram.ext import CallbackContext, CommandHandler, Filters
+from telegram.utils.helpers import escape_markdown
 
 
-def get_rules(update: Update):
+def get_rules(update: Update, context: CallbackContext):
     chat_id = update.effective_chat.id
     send_rules(update, chat_id)
 
@@ -21,24 +26,26 @@ def get_rules(update: Update):
 def send_rules(update, chat_id, from_pm=False):
     bot = dispatcher.bot
     user = update.effective_user  # type: Optional[User]
+    reply_msg = update.message.reply_to_message
     try:
         chat = bot.get_chat(chat_id)
     except BadRequest as excp:
-        if excp.message != "Chat not found" or not from_pm:
+        if excp.message == "Chat not found" and from_pm:
+            bot.send_message(
+                user.id,
+                "The rules shortcut for this chat hasn't been set properly! Ask admins to "
+                "fix this.\nMaybe they forgot the hyphen in ID",
+            )
+            return
+        else:
             raise
 
-        bot.send_message(
-            user.id,
-            "The rules shortcut for this chat hasn't been set properly! Ask admins to "
-            "fix this.\nMaybe they forgot the hyphen in ID",
-        )
-        return
     rules = sql.get_rules(chat_id)
     text = f"The rules for *{escape_markdown(chat.title)}* are:\n\n{rules}"
 
     if from_pm and rules:
         bot.send_message(
-            user.id, text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+            user.id, text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True,
         )
     elif from_pm:
         bot.send_message(
@@ -46,17 +53,36 @@ def send_rules(update, chat_id, from_pm=False):
             "The group admins haven't set any rules for this chat yet. "
             "This probably doesn't mean it's lawless though...!",
         )
+    elif rules and reply_msg:
+        reply_msg.reply_text(
+            "Please click the button below to see the rules.",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="Rules", url=f"t.me/{bot.username}?start={chat_id}",
+                        ),
+                    ],
+                ],
+            ),
+        )
     elif rules:
         update.effective_message.reply_text(
             "Please click the button below to see the rules.",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="Rules", url=f"t.me/{bot.username}?start={chat_id}")]]
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="Rules", url=f"t.me/{bot.username}?start={chat_id}",
+                        ),
+                    ],
+                ],
             ),
         )
     else:
         update.effective_message.reply_text(
             "The group admins haven't set any rules for this chat yet. "
-            "This probably doesn't mean it's lawless though...!"
+            "This probably doesn't mean it's lawless though...!",
         )
 
 
@@ -70,7 +96,7 @@ def set_rules(update: Update, context: CallbackContext):
         txt = args[1]
         offset = len(txt) - len(raw_text)  # set correct offset relative to command
         markdown_rules = markdown_parser(
-            txt, entities=msg.parse_entities(), offset=offset
+            txt, entities=msg.parse_entities(), offset=offset,
         )
 
         sql.set_rules(chat_id, markdown_rules)
@@ -104,7 +130,6 @@ def __chat_settings__(chat_id, user_id):
 
 __help__ = """
  - /rules: get the rules for this chat.
-
 *Admin only:*
  - /setrules <your rules here>: set the rules for this chat.
  - /clearrules: clear the rules for this chat.

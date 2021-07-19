@@ -139,14 +139,14 @@ def chats(update: Update, context: CallbackContext):
     if update.effective_message.chat.get_member(bot.id).can_send_messages is False:
         bot.leaveChat(update.effective_message.chat.id)
 
-       
+
 def __user_info__(user_id):
-	if user_id in [777000, 1087968824]:
-        return """I've seen.them in: <code>N/A</code>"""
+    if user_id in [777000, 1087968824]:
+        return """Groups count: <code>N/A</code>"""
     if user_id == dispatcher.bot.id:
-        return """I've seen them in... Wow. Are they stalking me? They're in all the same places I am... oh. It's me."""
+        return """Groups count: <code>N/A</code>"""
     num_chats = sql.get_user_num_chats(user_id)
-    return """I've seen them in <code>{num_chats}</code> chats in total."""
+    return f"""Groups count: <code>{num_chats}</code>"""
 
 
 def __stats__():

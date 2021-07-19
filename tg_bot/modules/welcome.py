@@ -7,7 +7,7 @@ from io import BytesIO
 import tg_bot.modules.sql.welcome_sql as sql
 from tg_bot import (
     DEV_USERS,
-    LOGGER
+    LOGGER,
     OWNER_ID,
     SUDO_USERS,
     SUPPORT_USERS,
