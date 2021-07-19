@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Optional, List
 
 import requests
-from telegram import Update, MessageEntity
+from telegram import Update, MessageEntity, ParseMode
 from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 
@@ -15,6 +15,7 @@ from tg_bot import (
     SUDO_USERS,
     SUPPORT_USERS,
     WHITELIST_USERS,
+    INFOPIC,
     BAN_STICKER,
 )
 from tg_bot.__main__ import GDPR
@@ -113,8 +114,10 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
     else:
         return
 
+    rep = message.reply_text("<code>Wait a sec...</code>", parse_mode=ParseMode.HTML)
+
     text = (
-        f"<b>General:</b>\n"
+        f"<b>User Information ℹ️:</b>\n"
         f"ID: <code>{user.id}</code>\n"
         f"First Name: {html.escape(user.first_name)}"
     )
@@ -139,7 +142,7 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
     except:
         pass  # don't crash if api is down somehow...
 
-    Nation_level_present = False
+    Super_user_present = False
 
     num_chats = sql.get_user_num_chats(user.id)
     text += f"\n<b>Chat count</b>: <code>{num_chats}</code>"
