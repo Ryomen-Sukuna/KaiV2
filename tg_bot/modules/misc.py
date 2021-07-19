@@ -358,7 +358,7 @@ STATS_HANDLER = CommandHandler(
     "stats", stats, filters=CustomFilters.sudo_filter, run_async=True
 )
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private, run_async=True)
-PING_HANDLER = CommandHandler ("ping", ping, run_async=True)
+PING_HANDLER = CommandHandler("ping", ping, run_async=True)
 
 dispatcher.add_handler(ID_HANDLER)
 dispatcher.add_handler(IP_HANDLER)
