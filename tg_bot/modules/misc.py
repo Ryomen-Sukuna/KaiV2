@@ -217,6 +217,7 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
 
     rep.delete()
 
+
 def echo(update: Update):
     args = update.effective_message.text.split(None, 1)
     message = update.effective_message
