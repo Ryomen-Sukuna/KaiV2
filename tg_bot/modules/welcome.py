@@ -248,7 +248,6 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                     f"#USER_JOINED\n"
                     f"Bot Owner just joined the chat"
                 )
-                continue
 
             # Welcome Devs
             if new_mem.id in DEV_USERS:
@@ -256,7 +255,6 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                     "Whoa! A member of the Iron Blood just joined!",
                     reply_to_message_id=reply,
                 )
-                continue
 
             # Welcome Sudos
             if new_mem.id in SUDO_USERS:
@@ -264,7 +262,6 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                     "Huh! A Sudo Users just joined! Stay Alert!",
                     reply_to_message_id=reply,
                 )
-                continue
 
             # Welcome Support
             if new_mem.id in SUPPORT_USERS:
@@ -272,14 +269,12 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                     "Huh! Someone with a Support Users just joined!",
                     reply_to_message_id=reply,
                 )
-                continue
 
             # Welcome WHITELIST_USERS
             if new_mem.id in WHITELIST_USERS:
                 update.effective_message.reply_text(
                     "Oof! A Whitelist Users just joined!", reply_to_message_id=reply
                 )
-                continue
 
             # Welcome yourself
             if new_mem.id == bot.id:
@@ -287,7 +282,6 @@ def new_member(update: Update, context: CallbackContext):  # sourcery no-metrics
                     "Thanks for adding me! Join @ironbloodnations for support.",
                     reply_to_message_id=reply,
                 )
-                continue
             buttons = sql.get_welc_buttons(chat.id)
             keyb = build_keyboard(buttons)
 
