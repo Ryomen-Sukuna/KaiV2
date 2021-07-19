@@ -1,7 +1,7 @@
 import random
 import html
 from datetime import datetime
-import humanize
+import humanirun_async=True
 
 from tg_bot import dispatcher
 from tg_bot.modules.disable import (
@@ -136,7 +136,7 @@ def check_afk(update: Update, context: CallbackContext, user_id: int, fst_name: 
         if int(userc_id) == int(user_id):
             return
 
-        time = humanize.naturaldelta(datetime.now() - user.time)
+        time = humanirun_async=True.naturaldelta(datetime.now() - user.time)
 
         if not user.reason:
             res = "{} is afk.\n\nLast seen {} ago.".format(
@@ -163,12 +163,12 @@ __help__ = """
 When marked as AFK, any mentions will be replied to with a message to say you're not available!
 """
 
-AFK_HANDLER = DisableAbleCommandHandler("afk", afk)
+AFK_HANDLER = DisableAbleCommandHandler("afk", afk, run_async=True)
 AFK_REGEX_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"^(?i)brb(.*)$"), afk, friendly="afk",
+    Filters.regex(r"^(?i)brb(.*)$"), afk, friendly="afk", run_async=True,
 )
-NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.chat_type.groups, no_longer_afk)
-AFK_REPLY_HANDLER = MessageHandler(Filters.all & Filters.chat_type.groups, reply_afk)
+NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.chat_type.groups, no_longer_afk, run_async=True)
+AFK_REPLY_HANDLER = MessageHandler(Filters.all & Filters.chat_type.groups, reply_afk, run_async=True)
 
 dispatcher.add_handler(AFK_HANDLER, AFK_GROUP)
 dispatcher.add_handler(AFK_REGEX_HANDLER, AFK_GROUP)
