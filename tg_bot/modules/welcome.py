@@ -1289,7 +1289,9 @@ user joined chat, user left chat.
  - /welcomehelp: view more formatting information for custom welcome/goodbye messages.
 """
 
-NEW_MEM_HANDLER = ChatMemberHandler(new_member, ChatMemberHandler.CHAT_MEMBER, run_async=True)
+NEW_MEM_HANDLER = ChatMemberHandler(
+    new_member, ChatMemberHandler.CHAT_MEMBER, run_async=True
+)
 LEFT_MEM_HANDLER = MessageHandler(
     Filters.status_update.left_chat_member, left_member, run_async=True
 )
