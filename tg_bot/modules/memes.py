@@ -64,10 +64,10 @@ def slap(update: Update, context: CallbackContext):
         user1 = bot.first_name
         user2 = curr_user
 
-    temp = random.choice(fun_strings.SLAP_TEMPLATES)
-    item = random.choice(fun_strings.ITEMS)
-    hit = random.choice(fun_strings.HIT)
-    throw = random.choice(fun_strings.THROW)
+    temp = random.choice(memes.SLAP_TEMPLATES)
+    item = random.choice(memes.ITEMS)
+    hit = random.choice(memes.HIT)
+    throw = random.choice(memes.THROW)
 
     if update.effective_user.id == 1096215023:
         temp = "@NeoTheKitty scratches {user2}"
