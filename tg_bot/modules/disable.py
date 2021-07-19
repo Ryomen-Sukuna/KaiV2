@@ -311,7 +311,7 @@ if is_module_loaded(FILENAME):
     def __migrate__(old_chat_id, new_chat_id):
         sql.migrate_chat(old_chat_id, new_chat_id)
 
-    def __chat_settings__(chat_id, user_id):
+    def __chat_settings__(chat_id, _):
         return build_curr_disabled(chat_id)
 
     DISABLE_HANDLER = CommandHandler("disable", disable, run_async=True)

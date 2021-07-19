@@ -12,7 +12,7 @@ from telegram import ParseMode, Update, ChatPermissions
 from telegram.ext import CallbackContext
 
 
-def runs(update: Update, context: CallbackContext):
+def runs(update: Update, _):
     temp = random.choice(memes.RUN_STRINGS)
     if update.effective_user.id == 1170714920:
         temp = "Run everyone, they just dropped a bomb 💣💣"

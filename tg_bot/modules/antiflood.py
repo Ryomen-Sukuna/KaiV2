@@ -391,7 +391,7 @@ def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
 
-def __chat_settings__(chat_id, user_id):
+def __chat_settings__(chat_id, _):
     limit = sql.get_flood_limit(chat_id)
     if limit == 0:
         return "Not enforcing to flood control."

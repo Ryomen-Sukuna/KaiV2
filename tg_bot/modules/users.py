@@ -88,7 +88,7 @@ def broadcast(update: Update, context: CallbackContext):
         )
 
 
-def log_user(update: Update, context: CallbackContext):
+def log_user(update: Update, _):
     chat = update.effective_chat
     msg = update.effective_message
 

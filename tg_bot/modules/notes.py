@@ -316,7 +316,7 @@ def clear(update: Update, context: CallbackContext):
             update.effective_message.reply_text("That's not a note in my database!")
 
 
-def clearall(update: Update, context: CallbackContext):
+def clearall(update: Update, _):
     chat = update.effective_chat
     user = update.effective_user
     member = chat.get_member(user.id)
@@ -343,7 +343,7 @@ def clearall(update: Update, context: CallbackContext):
         )
 
 
-def clearall_btn(update: Update, context: CallbackContext):
+def clearall_btn(update: Update, _):
     query = update.callback_query
     chat = update.effective_chat
     message = update.effective_message
@@ -543,7 +543,7 @@ def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
 
-def __chat_settings__(chat_id, user_id):
+def __chat_settings__(chat_id, _):
     notes = sql.get_all_chat_notes(chat_id)
     return f"There are `{len(notes)}` notes in this chat."
 

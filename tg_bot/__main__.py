@@ -128,7 +128,7 @@ def send_help(chat_id, text, keyboard=None):
     )
 
 
-def test(update: Update, context: CallbackContext):
+def test(update: Update, _):
     # pprint(eval(str(update)))
     # update.effective_message.reply_text("Hola tester! _I_ *have* `markdown`", parse_mode=ParseMode.MARKDOWN)
     update.effective_message.reply_text("This person edited a message")
@@ -533,11 +533,11 @@ def get_settings(update: Update, context: CallbackContext):
         send_settings(chat.id, user.id, True)
 
 
-def donate(update: Update, context: CallbackContext):
+def donate(update: Update, _):
     update.effective_message.reply_text("I'm free for everyone! >_<")
 
 
-def migrate_chats(update: Update, context: CallbackContext):
+def migrate_chats(update: Update, _):
     msg = update.effective_message  # type: Optional[Message]
     if msg.migrate_to_chat_id:
         old_chat = update.effective_chat.id

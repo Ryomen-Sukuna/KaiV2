@@ -476,7 +476,7 @@ def reply_filter(update, context):
             break
 
 
-def rmall_filters(update, context):
+def rmall_filters(update, _):
     chat = update.effective_chat
     user = update.effective_user
     member = chat.get_member(user.id)
@@ -503,7 +503,7 @@ def rmall_filters(update, context):
         )
 
 
-def rmall_callback(update, context):
+def rmall_callback(update, _):
     query = update.callback_query
     chat = update.effective_chat
     msg = update.effective_message
@@ -582,7 +582,7 @@ def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
 
-def __chat_settings__(chat_id, user_id):
+def __chat_settings__(chat_id, _):
     cust_filters = sql.get_chat_triggers(chat_id)
     return "There are `{}` custom filters here.".format(len(cust_filters))
 

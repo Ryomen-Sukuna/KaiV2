@@ -9,7 +9,7 @@ from telegram.utils.helpers import mention_html
 from alphabet_detector import AlphabetDetector
 
 import tg_bot.modules.sql.locks_sql as sql
-from tg_bot import dispatcher, DRAGONS, LOGGER
+from tg_bot import dispatcher, SUDO_USERS, LOGGER
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.chat_status import (
     can_delete,
@@ -140,7 +140,7 @@ def unrestr_members(
             pass
 
 
-def locktypes(update, context):
+def locktypes(update, _):
     update.effective_message.reply_text(
         "\n • ".join(
             ["Locks available: "]
@@ -555,7 +555,7 @@ def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
 
-def __chat_settings__(chat_id, user_id):
+def __chat_settings__(chat_id, _):
     return build_lock_message(chat_id)
 
 

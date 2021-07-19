@@ -17,7 +17,7 @@ from telegram.ext import CallbackContext, CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown
 
 
-def get_rules(update: Update, context: CallbackContext):
+def get_rules(update: Update, _):
     chat_id = update.effective_chat.id
     send_rules(update, chat_id)
 
@@ -130,7 +130,7 @@ def __migrate__(old_chat_id, new_chat_id):
     sql.migrate_chat(old_chat_id, new_chat_id)
 
 
-def __chat_settings__(chat_id, user_id):
+def __chat_settings__(chat_id, _):
     return f"This chat has had it's rules set: `{bool(sql.get_rules(chat_id))}`"
 
 
