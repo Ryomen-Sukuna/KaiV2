@@ -120,22 +120,30 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
         return
 
     if sql.is_user_gbanned(user_id):
+
         if not reason:
-            message.reply_text("This user is already gbanned; I'd change the reason, but you haven't given me one...")
+            message.reply_text(
+                "This user is already gbanned; I'd change the reason, but you haven't given me one..."
+            )
             return
 
-        old_reason = sql.update_gban_reason(user_id, user_chat.username or user_chat.first_name, reason)
+        old_reason = sql.update_gban_reason(
+            user_id, user_chat.username or user_chat.first_name, reason
+        )
         if old_reason:
             message.reply_text(
                 "This user is already gbanned, for the following reason:\n"
                 "<code>{}</code>\n"
                 "I've gone and updated it with your new reason!".format(
                     html.escape(old_reason)
-                ),    
-                parse_mode=ParseMode.HTML
-            )    
+                ),
+                parse_mode=ParseMode.HTML,
+            )
+
         else:
-            message.reply_text("This user is already gbanned, but had no reason set; I've gone and updated it!")
+            message.reply_text(
+                "This user is already gbanned, but had no reason set; I've gone and updated it!"
+            )
 
         return
 
@@ -160,7 +168,7 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
     )
 
     if reason:
-        if chat.type in [chat.SUPERGROUP, chat.username]:
+        if chat.type == chat.SUPERGROUP and chat.username:
             log_message += f'\n<b>Reason:</b> <a href="https://telegram.me/{chat.username}/{message.message_id}">{reason}</a>'
         else:
             log_message += f"\n<b>Reason:</b> <code>{reason}</code>"
@@ -180,8 +188,9 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
 
     sql.gban_user(user_id, user_chat.username or user_chat.first_name, reason)
 
-    chats = get_all_chats()
+    chats = get_user_com_chats(user_id)
     gbanned_chats = 0
+
     for chat in chats:
         chat_id = int(chat)
 
@@ -190,22 +199,24 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
             continue
 
         try:
-            bot.ban_chat_member(chat_id, user_id)
-            gbanned += 1
-            
+            bot.kick_chat_member(chat_id, user_id)
+            gbanned_chats += 1
+
         except BadRequest as excp:
             if excp.message not in GBAN_ERRORS:
                 message.reply_text(f"Could not gban due to: {excp.message}")
                 if GBAN_LOGS:
-                	 bot.send_message(
-                	     GBAN_LOGS,
-                	     f"Could not gban due to {excp.message}",
-                	     parse_mode=ParseMode.HTML,
-                	 )
-                else:	 
-                	send_to_list(
-                	    bot, SUDO_USERS + SUPPORT_USERS, f"Could not gban due to: {excp.message}",
-                	)    
+                    bot.send_message(
+                        GBAN_LOGS,
+                        f"Could not gban due to {excp.message}",
+                        parse_mode=ParseMode.HTML,
+                    )
+                else:
+                    send_to_list(
+                        bot,
+                        SUDO_USERS + SUPPORT_USERS,
+                        f"Could not gban due to: {excp.message}",
+                    )
                 sql.ungban_user(user_id)
                 return
         except TelegramError:

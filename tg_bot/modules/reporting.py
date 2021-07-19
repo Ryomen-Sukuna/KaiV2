@@ -30,7 +30,7 @@ def report_setting(update: Update, context: CallbackContext):
             if args[0] in ("yes", "on"):
                 sql.set_user_setting(chat.id, True)
                 msg.reply_text(
-                    "Turned on reporting! You'll be notified whenever anyone reports something.",
+                    "Turned on reporting! You'll be notified whenever anyone reports something."
                 )
 
             elif args[0] in ("no", "off"):
@@ -48,13 +48,13 @@ def report_setting(update: Update, context: CallbackContext):
                 sql.set_chat_setting(chat.id, True)
                 msg.reply_text(
                     "Turned on reporting! Admins who have turned on reports will be notified when /report "
-                    "or @admin is called.",
+                    "or @admin is called."
                 )
 
             elif args[0] in ("no", "off"):
                 sql.set_chat_setting(chat.id, False)
                 msg.reply_text(
-                    "Turned off reporting! No admins will be notified on /report or @admin.",
+                    "Turned off reporting! No admins will be notified on /report or @admin."
                 )
         else:
             msg.reply_text(
@@ -91,7 +91,7 @@ def report(update: Update, context: CallbackContext) -> str:
             return ""
 
         if reported_user.id in REPORT_IMMUNE_USERS:
-            message.reply_text("What? You reporting a special user?")
+            message.reply_text("Uh? You reporting a super user?")
             return ""
 
         if chat.username and chat.type == Chat.SUPERGROUP:
@@ -106,10 +106,28 @@ def report(update: Update, context: CallbackContext) -> str:
             link = f'<b> • Reported message:</b> <a href="https://t.me/{chat.username}/{message.reply_to_message.message_id}">click here</a>'
             should_forward = False
             keyboard = [
-                [InlineKeyboardButton("➡ Message", url=f"https://t.me/{chat.username}/{message.reply_to_message.message_id}")],
-                [InlineKeyboardButton("⚠ Kick", callback_data=f"report_{chat.id}=kick={reported_user.id}={reported_user.first_name}"),
-                InlineKeyboardButton("⛔️ Ban", callback_data=f"report_{chat.id}=banned={reported_user.id}={reported_user.first_name}")],
-                [InlineKeyboardButton("❎ Delete Message", callback_data=f"report_{chat.id}=delete={reported_user.id}={message.reply_to_message.message_id}")],
+                [
+                    InlineKeyboardButton(
+                        "➡ Message",
+                        url=f"https://t.me/{chat.username}/{message.reply_to_message.message_id}",
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "⚠ Kick",
+                        callback_data=f"report_{chat.id}=kick={reported_user.id}={reported_user.first_name}",
+                    ),
+                    InlineKeyboardButton(
+                        "⛔️ Ban",
+                        callback_data=f"report_{chat.id}=banned={reported_user.id}={reported_user.first_name}",
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        "❎ Delete Message",
+                        callback_data=f"report_{chat.id}=delete={reported_user.id}={message.reply_to_message.message_id}",
+                    )
+                ],
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
         else:
@@ -130,7 +148,7 @@ def report(update: Update, context: CallbackContext) -> str:
                 try:
                     if not chat.type == Chat.SUPERGROUP:
                         bot.send_message(
-                            admin.user.id, msg + link, parse_mode=ParseMode.HTML,
+                            admin.user.id, msg + link, parse_mode=ParseMode.HTML
                         )
 
                         if should_forward:
@@ -142,7 +160,7 @@ def report(update: Update, context: CallbackContext) -> str:
                                 message.forward(admin.user.id)
                     if not chat.username:
                         bot.send_message(
-                            admin.user.id, msg + link, parse_mode=ParseMode.HTML,
+                            admin.user.id, msg + link, parse_mode=ParseMode.HTML
                         )
 
                         if should_forward:
@@ -205,7 +223,7 @@ def buttons(update: Update, context: CallbackContext):
     splitter = query.data.replace("report_", "").split("=")
     if splitter[1] == "kick":
         try:
-            bot.banChatMember(splitter[0], splitter[2])
+            bot.kickChatMember(splitter[0], splitter[2])
             bot.unbanChatMember(splitter[0], splitter[2])
             query.answer("✅ Succesfully kicked")
             return ""
@@ -218,7 +236,7 @@ def buttons(update: Update, context: CallbackContext):
             )
     elif splitter[1] == "banned":
         try:
-            bot.banChatMember(splitter[0], splitter[2])
+            bot.kickChatMember(splitter[0], splitter[2])
             query.answer("✅  Succesfully Banned")
             return ""
         except Exception as err:
@@ -252,8 +270,8 @@ NOTE: neither of these will get triggered if used by admins
    - If in chat, toggles that chat's status.
 """
 
-SETTING_HANDLER = CommandHandler("reports", report_setting)
-REPORT_HANDLER = CommandHandler("report", report, filters=Filters.group)
+SETTING_HANDLER = CommandHandler("reports", report_setting, run_async=True)
+REPORT_HANDLER = CommandHandler("report", report, filters=Filters.chat_type.groups, run_async=True)
 ADMIN_REPORT_HANDLER = MessageHandler(Filters.regex(r"(?i)@admin(s)?"), report)
 
 REPORT_BUTTON_USER_HANDLER = CallbackQueryHandler(buttons, pattern=r"report_")
