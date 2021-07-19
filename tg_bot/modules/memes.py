@@ -1,62 +1,80 @@
+import html
 import random
+import time
 from typing import Optional, List
 
 from tg_bot import dispatcher
-import tg_bot.modules.helper_funcs.meme_strings as meme
+from tg_bot.modules.helper_funcs.chat_status import is_user_admin
+import tg_bot.modules.helper_funcs.memes_strings as memes
 from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.extraction import extract_user
-from telegram import ParseMode, Update, Bot
+from telegram import ParseMode, Update, ChatPermissions
 from telegram.ext import CallbackContext
-from telegram.utils.helpers import escape_markdown
 
 
 def runs(update: Update, context: CallbackContext):
-    temp = random.choice(meme.RUN_STRINGS)
+    temp = random.choice(memes.RUN_STRINGS)
     if update.effective_user.id == 1170714920:
         temp = "Run everyone, they just dropped a bomb 💣💣"
     update.effective_message.reply_text(temp)
 
 
-def slap(update: Update, args: List[str]):
-    msg = update.effective_message  # type: Optional[Message]
+def slap(update: Update, context: CallbackContext):
+    bot, args = context.bot, context.args
+    message = update.effective_message
+    chat = update.effective_chat
 
-    # reply to correct message
     reply_text = (
-        msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text
+        message.reply_to_message.reply_text
+        if message.reply_to_message
+        else message.reply_text
     )
 
-    # get user who sent message
-    if msg.from_user.username:
-        curr_user = "@" + escape_markdown(msg.from_user.username)
-    else:
-        curr_user = "[{}](tg://user?id={})".format(
-            msg.from_user.first_name, msg.from_user.id
-        )
+    curr_user = html.escape(message.from_user.first_name)
+    user_id = extract_user(message, args)
 
-    user_id = extract_user(update.effective_message, args)
+    if user_id == bot.id:
+        temp = random.choice(memes.SLAP_KAI_TEMPLATES)
+
+        if isinstance(temp, list):
+            if temp[2] == "tmute":
+                if is_user_admin(chat, message.from_user.id):
+                    reply_text(temp[1])
+                    return
+
+                mutetime = int(time.time() + 60)
+                bot.restrict_chat_member(
+                    chat.id,
+                    message.from_user.id,
+                    until_date=mutetime,
+                    permissions=ChatPermissions(can_send_messages=False),
+                )
+            reply_text(temp[0])
+        else:
+            reply_text(temp)
+        return
+
     if user_id:
+
         slapped_user = bot.get_chat(user_id)
         user1 = curr_user
-        if slapped_user.username:
-            user2 = "@" + escape_markdown(slapped_user.username)
-        else:
-            user2 = "[{}](tg://user?id={})".format(
-                slapped_user.first_name, slapped_user.id
-            )
+        user2 = html.escape(slapped_user.first_name)
 
-    # if no target found, bot targets the sender
     else:
-        user1 = "[{}](tg://user?id={})".format(bot.first_name, bot.id)
+        user1 = bot.first_name
         user2 = curr_user
 
-    temp = random.choice(meme.SLAP_TEMPLATES)
-    item = random.choice(meme.ITEMS)
-    hit = random.choice(meme.HIT)
-    throw = random.choice(meme.THROW)
+    temp = random.choice(fun_strings.SLAP_TEMPLATES)
+    item = random.choice(fun_strings.ITEMS)
+    hit = random.choice(fun_strings.HIT)
+    throw = random.choice(fun_strings.THROW)
 
-    repl = temp.format(user1=user1, user2=user2, item=item, hits=hit, throws=throw)
+    if update.effective_user.id == 1096215023:
+        temp = "@NeoTheKitty scratches {user2}"
 
-    reply_text(repl, parse_mode=ParseMode.MARKDOWN)
+    reply = temp.format(user1=user1, user2=user2, item=item, hits=hit, throws=throw)
+
+    reply_text(reply, parse_mode=ParseMode.HTML)
 
 
 RUNS_HANDLER = DisableAbleCommandHandler("runs", runs, run_async=True)
