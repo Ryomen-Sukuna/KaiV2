@@ -3,6 +3,7 @@ from typing import Optional, List
 
 from tg_bot import dispatcher
 import tg_bot.modules.helper_funcs.meme_strings as meme
+from tg_bot.modules.disable import DisableAbleCommandHandler
 from tg_bot.modules.helper_funcs.extraction import extract_user
 from telegram import ParseMode, Update, Bot
 from telegram.ext import CallbackContext
