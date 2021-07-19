@@ -230,14 +230,14 @@ def echo(update: Update):
     message.delete()
 
 
-def gdpr(update: Update):
+def gdpr(update: Update, context: CallbackContext:
     update.effective_message.reply_text("Deleting identifiable data...")
     for mod in GDPR:
         mod.__gdpr__(update.effective_user.id)
 
     update.effective_message.reply_text(
         "Your personal data has been deleted.\n\nNote that this will not unban "
-        "you from any chats, as that is telegram data, not Marie data. "
+        "you from any chats, as that is telegram data, not Kai data. "
         "Flooding, warns, and gbans are also preserved, as of "
         "[this](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/individual-rights/right-to-erasure/), "
         "which clearly states that the right to erasure does not apply "
@@ -292,7 +292,6 @@ def stats(update: Update):
     )
 
 
-# /ip is for private use
 __help__ = """
  - /id: get the current group id. If used by replying to a message, gets that user's id.
  - /runs: reply a random string from an array of replies.
