@@ -409,10 +409,10 @@ KICKME_HANDLER = DisableAbleCommandHandler(
 
 dispatcher.add_handler(BAN_HANDLER)
 dispatcher.add_handler(TEMPBAN_HANDLER)
-dispatcher.add_handler(kick_HANDLER)
+dispatcher.add_handler(KICK_HANDLER)
 dispatcher.add_handler(UNBAN_HANDLER)
 dispatcher.add_handler(ROAR_HANDLER)
-dispatcher.add_handler(kickME_HANDLER)
+dispatcher.add_handler(KICKME_HANDLER)
 
 __mod_name__ = "Bans"
 __handlers__ = [
