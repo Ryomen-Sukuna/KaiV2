@@ -113,7 +113,7 @@ SPAMMERS = get_user_list("spammers")
 spamwatch_api = KInit.spamwatch_api
 CF_API_KEY = KInit.CF_API_KEY
 
-SPB_MODE = kigconfig.getboolean('SPB_MODE', False)
+SPB_MODE = kaiconfig.getboolean('SPB_MODE', False)
 
 # SpamWatch
 sw = KInit.init_sw()
