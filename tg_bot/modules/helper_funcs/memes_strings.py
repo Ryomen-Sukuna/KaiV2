@@ -50,7 +50,7 @@ RUN_STRINGS = (
     "As The Doctor would say... RUN!",
 )
 
-SLAP_TEMPLATES = (
+SLAP_KAI_TEMPLATES = (
     "{user1} {hits} {user2} with a {item}.",
     "{user1} {hits} {user2} in the face with a {item}.",
     "{user1} {hits} {user2} around a bit with a {item}.",
