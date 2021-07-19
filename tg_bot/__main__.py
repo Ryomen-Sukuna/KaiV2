@@ -27,12 +27,10 @@ from tg_bot import (
     TOKEN,
     WEBHOOK,
     OWNER_ID,
-    DONATION_LINK,
     CERT_PATH,
     PORT,
     URL,
     log,
-    ALLOW_EXCL,
 )
 
 # needed to dynamically load modules
