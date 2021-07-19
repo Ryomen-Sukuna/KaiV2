@@ -21,6 +21,7 @@ from tg_bot.modules.helper_funcs.chat_status import (
 )
 from tg_bot.modules.helper_funcs.misc import build_keyboard, revert_buttons
 from tg_bot.modules.helper_funcs.msg_types import get_welcome_type
+from tg_bot.modules.helper_funcs.handlers import MessageHandlerChecker
 from tg_bot.modules.helper_funcs.string_handling import (
     escape_invalid_curly_brackets,
     markdown_parser,
