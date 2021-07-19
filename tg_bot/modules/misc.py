@@ -230,7 +230,7 @@ def echo(update: Update):
     message.delete()
 
 
-def gdpr(update: Update, context: CallbackContext:
+def gdpr(update: Update, context: CallbackContext):
     update.effective_message.reply_text("Deleting identifiable data...")
     for mod in GDPR:
         mod.__gdpr__(update.effective_user.id)
