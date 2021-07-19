@@ -12,7 +12,7 @@ StartTime = time.time()
 def get_user_list(key):
     # Import here to evade a circular import
     from tg_bot.modules.sql import level_sql
-    level = level_sql.get_levels(key)
+    levels = level_sql.get_levels(key)
     return [a.user_id for a in levels]
 
 # enable logging
