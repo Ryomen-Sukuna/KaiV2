@@ -25,7 +25,7 @@ from tg_bot.modules.helper_funcs.extraction import extract_user, extract_user_an
 from tg_bot.modules.helper_funcs.misc import send_to_list
 from telegram import ParseMode, Update
 from telegram.error import BadRequest, TelegramError
-from telegram.ext import CallbackContext, Filters
+from telegram.ext import CallbackContext, Filters, MessageHandler, CommandHandler
 from telegram.utils.helpers import mention_html
 from tg_bot.modules.helper_funcs.chat_status import dev_plus
 from spamwatch.errors import (
@@ -112,7 +112,7 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
 
     if int(user_id) in DEV_USERS:
         message.reply_text(
-            "That user is part of the Union\nI can't act against our own."
+            "That user is part of the Iron Blood\nI can't act against our own."
         )
         return
 
@@ -124,16 +124,12 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
 
     if int(user_id) in SUPPORT_USERS:
         message.reply_text(
-            "OOOH someone's trying to gban a Sakura Nation! *grabs popcorn*"
+            "OOOH someone's trying to gban a Support Users! *grabs popcorn*"
         )
         return
 
-    if int(user_id) in SARDEGNA_USERS:
-        message.reply_text("That's a Sardegna! They cannot be banned!")
-        return
-
     if int(user_id) in WHITELIST_USERS:
-        message.reply_text("That's a Neptunia! They cannot be banned!")
+        message.reply_text("That's a Whitelist Users! They cannot be banned!")
         return
 
     if int(user_id) in (777000, 1087968824):
@@ -260,7 +256,7 @@ def gban(update: Update, context: CallbackContext):  # sourcery no-metrics
             pass
 
     if GBAN_LOGS:
-        log.edit_text(
+        LOGGER.edit_text(
             log_message + f"\n<b>Chats affected:</b> <code>{gbanned_chats}</code>",
             parse_mode=ParseMode.HTML,
         )
@@ -384,7 +380,7 @@ def ungban(update: Update, context: CallbackContext):  # sourcery no-metrics
     sql.ungban_user(user_id)
 
     if GBAN_LOGS:
-        log.edit_text(
+        LOGGER.edit_text(
             log_message + f"\n<b>Chats affected:</b> {ungbanned_chats}",
             parse_mode=ParseMode.HTML,
         )
@@ -461,9 +457,9 @@ def check_and_ban(update, user_id, should_message=True):
                                 parse_mode=ParseMode.HTML,
                             )
                 except BaseException:
-                    log.warning("Spam Protection API is unreachable.")
+                    LOGGER.warning("Spam Protection API is unreachable.")
         except BaseException as e:
-            log.info(f"SpamProtection was disabled due to {e}")
+            LOGGER.info(f"SpamProtection was disabled due to {e}")
     try:
         sw_ban = sw.get_ban(int(user_id))
     except AttributeError:
@@ -476,7 +472,7 @@ def check_and_ban(update, user_id, should_message=True):
         Forbidden,
         TooManyRequests,
     ) as e:
-        log.warning(f" SpamWatch Error: {e}")
+        LOGGER.warning(f" SpamWatch Error: {e}")
         sw_ban = None
 
     if sw_ban:
@@ -628,7 +624,3 @@ dispatcher.add_handler(GBAN_STATUS)
 
 __mod_name__ = "Anti-Spam"
 __handlers__ = [SPB_HANDLER, GBAN_HANDLER, UNGBAN_HANDLER, GBAN_LIST, GBAN_STATUS]
-
-if STRICT_GBAN:  # enforce GBANS if this is set
-    dispatcher.add_handler(GBAN_ENFORCER, GBAN_ENFORCE_GROUP)
-    __handlers__.append((GBAN_ENFORCER, GBAN_ENFORCE_GROUP))
