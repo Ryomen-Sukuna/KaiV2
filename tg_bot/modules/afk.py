@@ -1,7 +1,7 @@
 import random
 import html
 from datetime import datetime
-import humanirun_async=True
+import humanize
 
 from tg_bot import dispatcher
 from tg_bot.modules.disable import (
@@ -136,7 +136,7 @@ def check_afk(update: Update, context: CallbackContext, user_id: int, fst_name: 
         if int(userc_id) == int(user_id):
             return
 
-        time = humanirun_async=True.naturaldelta(datetime.now() - user.time)
+        time = humanize.naturaldelta(datetime.now() - user.time)
 
         if not user.reason:
             res = "{} is afk.\n\nLast seen {} ago.".format(

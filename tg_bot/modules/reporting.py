@@ -5,7 +5,7 @@ from tg_bot.modules.helper_funcs.chat_status import user_admin, user_not_admin
 from tg_bot.modules.log_channel import loggable
 from tg_bot.modules.sql import reporting_sql as sql
 from telegram import Chat, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Update
-from telegram.error import BadRequest, Unauthorirun_async=Trued
+from telegram.error import BadRequest, Unauthorized
 from telegram.ext import (
     CallbackContext,
     CallbackQueryHandler,
@@ -187,7 +187,7 @@ def report(update: Update, context: CallbackContext) -> str:
                             ):  # If user is giving a reason, send his message too
                                 message.forward(admin.user.id)
 
-                except Unauthorirun_async=Trued:
+                except Unauthorized:
                     pass
                 except BadRequest as excp:  # TODO: cleanup exceptions
                     LOGGER.exception("Exception while reporting user")

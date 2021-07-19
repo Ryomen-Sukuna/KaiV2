@@ -21,4 +21,5 @@ Once you've setup your database and your configuration (see below) is complete, 
 
 ## Credits:
 + [PaulSonOfLars](https://github.com/PaulSonOfLars) All original credits go to Paul and his dedication, Without his efforts, this fork would not have been possible!
-+ [SaitamaRobot](https://github.com/AnimeKaizoku/SaitamaRobot) most of modules taken from saitama
++ [SaitamaRobot](https://github.com/AnimeKaizoku/SaitamaRobot)
++ [Kigyō](https://github.com/Dank-del/EnterpriseALRobot)
