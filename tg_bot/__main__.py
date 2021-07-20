@@ -120,7 +120,9 @@ for module_name in ALL_MODULES:
 # do not async
 def send_help(chat_id, text, keyboard=None):
     if not keyboard:
-        keyboard = InlineKeyboardMarkup(paginate_modules(0, HELPABLE, "help"))
+        kb = paginate_modules(0, HELPABLE, "help")
+        kb.append([InlineKeyboardButton(text="🔙 Back", callback_data="start_back")])
+        keyboard = InlineKeyboardMarkup(kb)
     dispatcher.bot.send_message(
         chat_id=chat_id, text=text, parse_mode=ParseMode.MARKDOWN, reply_markup=keyboard
     )
@@ -256,41 +258,42 @@ def help_button(update, context):
                 )
                 + HELPABLE[module].__help__
             )
+            help_buttons.append(
+                [InlineKeyboardButton(text="🔙 Back", callback_data="help_back")]
+            )
             query.message.edit_text(
-                text=text,
+                HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(text="Back", callback_data="help_back")]]
-                ),
+                reply_markup=InlineKeyboardMarkup(help_buttons),
             )
 
         elif prev_match:
             curr_page = int(prev_match.group(1))
+            kb = paginate_modules(curr_page - 1, HELPABLE, "help")
+            kb.append([InlineKeyboardButton(text="🔙 Back", callback_data="start_back")])
             query.message.edit_text(
                 HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(curr_page - 1, HELPABLE, "help")
-                ),
+                reply_markup=InlineKeyboardMarkup(kb),
             )
 
         elif next_match:
             next_page = int(next_match.group(1))
+            kb = paginate_modules(next_page + 1, HELPABLE, "help")
+            kb.append([InlineKeyboardButton(text="🔙 Back", callback_data="start_back")])
             query.message.edit_text(
                 HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(next_page + 1, HELPABLE, "help")
-                ),
+                reply_markup=InlineKeyboardMarkup(kb),
             )
 
         elif back_match:
+            kb = paginate_modules(0, HELPABLE, "help")
+            kb.append([InlineKeyboardButton(text="🔙 Back", callback_data="start_back")])
             query.message.edit_text(
-                text=HELP_STRINGS,
+                HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(0, HELPABLE, "help")
-                ),
+                reply_markup=InlineKeyboardMarkup(kb),
             )
 
         # ensure no spinny white circle
