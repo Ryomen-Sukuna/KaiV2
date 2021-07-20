@@ -143,11 +143,11 @@ def start(update: Update, context: CallbackContext):
         query = update.callback_query
         if hasattr(query, "id"):
             first_name = update.effective_user.first_name
-            update.effective_message.reply_photo(
-                KAI_IMG,
-                PM_START_TEXT.format(
+            update.effective_message.reply_text(
+                text=PM_START_TEXT.format(
                     escape_markdown(first_name),
                     escape_markdown(context.bot.first_name),
+                    OWNER_ID,
                 ),
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
@@ -163,7 +163,7 @@ def start(update: Update, context: CallbackContext):
                         [
                             InlineKeyboardButton(
                                 text="✯ Support Group ✯",
-                                url=f"https://t.me/zerounions",
+                                url=f"https://t.me/ironbloodnations",
                             ),
                             InlineKeyboardButton(
                                 text="✫ Source Code ✫",
@@ -173,7 +173,7 @@ def start(update: Update, context: CallbackContext):
                         [
                             InlineKeyboardButton(
                                 text="[► Help ◄]",
-                                url="t.me/{}?start=help".format(context.bot.username),
+                                callback_data="help_back",
                             )
                         ],
                     ]
@@ -186,13 +186,13 @@ def start(update: Update, context: CallbackContext):
         if len(args) >= 1:
             if args[0].lower() == "help":
                 send_help(update.effective_chat.id, HELP_STRINGS)
-            elif args[0].lower().startswith("ghelp_"):
+            elif re.match("ghelp_.*", args[0].lower()):
                 mod = args[0].lower().split("_", 1)[1]
                 if not HELPABLE.get(mod, False):
                     return
                 send_help(
                     update.effective_chat.id,
-                    HELPABLE[mod].__help__,
+                    HELPABLE[module].__help__,
                     InlineKeyboardMarkup(
                         [
                             [
@@ -219,11 +219,11 @@ def start(update: Update, context: CallbackContext):
 
         else:
             first_name = update.effective_user.first_name
-            update.effective_message.reply_photo(
-                KAI_IMG,
-                PM_START_TEXT.format(
+            update.effective_message.reply_text(
+                text=PM_START_TEXT.format(
                     escape_markdown(first_name),
                     escape_markdown(context.bot.first_name),
+                    OWNER_ID,
                 ),
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
@@ -239,7 +239,7 @@ def start(update: Update, context: CallbackContext):
                         [
                             InlineKeyboardButton(
                                 text="✯ Support Group ✯",
-                                url=f"https://t.me/zerounions",
+                                url=f"https://t.me/ironbloodnations",
                             ),
                             InlineKeyboardButton(
                                 text="✫ Source Code ✫",
@@ -249,7 +249,7 @@ def start(update: Update, context: CallbackContext):
                         [
                             InlineKeyboardButton(
                                 text="[► Help ◄]",
-                                url="t.me/{}?start=help".format(context.bot.username),
+                                callback_data="help_back",
                             )
                         ],
                     ]
@@ -257,6 +257,11 @@ def start(update: Update, context: CallbackContext):
             )
     else:
         update.effective_message.reply_text("Yo, whadup?")
+
+    if hasattr(update, "callback_query"):
+        query = update.callback_query
+        if hasattr(query, "id"):
+            context.bot.answer_callback_query(query.id)
 
 
 # for test purposes
@@ -317,7 +322,7 @@ def help_button(update, context):
             kb = paginate_modules(curr_page - 1, HELPABLE, "help")
             kb.append([InlineKeyboardButton(text="🔙 Back", callback_data="start_back")])
             query.message.edit_text(
-                HELP_STRINGS,
+                text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(kb),
             )
@@ -327,7 +332,7 @@ def help_button(update, context):
             kb = paginate_modules(next_page + 1, HELPABLE, "help")
             kb.append([InlineKeyboardButton(text="🔙 Back", callback_data="start_back")])
             query.message.edit_text(
-                HELP_STRINGS,
+                text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(kb),
             )
