@@ -183,7 +183,6 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
     if Super_user_present:
         text += ' [<a href="https://t.me/{}?start=nations">?</a>]'.format(bot.username)
 
-    text += "\n"
     for mod in USER_INFO:
         try:
             mod_info = mod.__user_info__(user.id).strip()
@@ -202,6 +201,7 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
                 document=open(f"{user.id}.png", "rb"),
                 caption=(text),
                 parse_mode=ParseMode.HTML,
+                disable_web_page_preview=True,
             )
 
             os.remove(f"{user.id}.png")
