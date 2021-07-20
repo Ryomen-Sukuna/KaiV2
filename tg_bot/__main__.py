@@ -262,7 +262,7 @@ def help_button(update, context):
                 [InlineKeyboardButton(text="🔙 Back", callback_data="help_back")]
             )
             query.message.edit_text(
-                HELP_STRINGS,
+                text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(help_buttons),
             )
@@ -291,7 +291,7 @@ def help_button(update, context):
             kb = paginate_modules(0, HELPABLE, "help")
             kb.append([InlineKeyboardButton(text="🔙 Back", callback_data="start_back")])
             query.message.edit_text(
-                HELP_STRINGS,
+                text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(kb),
             )
