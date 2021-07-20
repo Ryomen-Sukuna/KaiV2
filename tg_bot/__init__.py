@@ -78,14 +78,13 @@ class KaiINIT:
         if self.spamwatch_api is None:
             log.warning("SpamWatch API key is missing! Check your config.ini")
             return None
-        else:
-            try:
-                sw = spamwatch.Client(spamwatch_api)
-                return sw
-            except:
-                sw = None
-                log.warning("Can't connect to SpamWatch!")
-                return sw
+        try:
+            sw = spamwatch.Client(spamwatch_api)
+            return sw
+        except:
+            sw = None
+            log.warning("Can't connect to SpamWatch!")
+            return sw
 
 
 KInit = KaiINIT(parser=kaiconfig)
