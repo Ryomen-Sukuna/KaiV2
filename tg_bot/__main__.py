@@ -136,7 +136,52 @@ def test(update: Update, _):
 
 
 def start(update: Update, context: CallbackContext):
+    chat = update.effective_chat
     args = context.args
+
+    if hasattr(update, "callback_query"):
+        query = update.callback_query
+        if hasattr(query, "id"):
+            first_name = update.effective_user.first_name
+            update.effective_message.reply_photo(
+                KAI_IMG,
+                PM_START_TEXT.format(
+                    escape_markdown(first_name),
+                    escape_markdown(context.bot.first_name),
+                ),
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text="✤ Add to your Group ✤",
+                                url="t.me/{}?startgroup=true".format(
+                                    context.bot.username
+                                ),
+                            )
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                text="✯ Support Group ✯",
+                                url=f"https://t.me/zerounions",
+                            ),
+                            InlineKeyboardButton(
+                                text="✫ Source Code ✫",
+                                url="https://github.com/Ryomen-Sukuna/KaiV2",
+                            ),
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                text="[► Help ◄]",
+                                url="t.me/{}?start=help".format(context.bot.username),
+                            )
+                        ],
+                    ]
+                ),
+            )
+            context.bot.answer_callback_query(query.id)
+            return
+
     if update.effective_chat.type == "private":
         if len(args) >= 1:
             if args[0].lower() == "help":
