@@ -325,7 +325,7 @@ def get_help(update: Update, context: CallbackContext):
                     [
                         InlineKeyboardButton(
                             text="Support Chat",
-                            url="https://t.me/{}".format(SUPPORT_CHAT),
+                            url="https://t.me/ironbloodnations",
                         )
                     ],
                 ]
