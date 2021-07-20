@@ -71,8 +71,7 @@ def no_longer_afk(update: Update, _):
                 "Where is {}?\nIn the chat!",
             ]
             chosen_option = random.choice(options)
-            update.effective_message.reply_text(
-                chosen_option.format(firstname))
+            update.effective_message.reply_text(chosen_option.format(firstname))
         except:
             return
 
