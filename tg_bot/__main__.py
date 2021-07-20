@@ -327,7 +327,7 @@ def get_help(update: Update, context: CallbackContext):
                             text="Support Chat",
                             url="https://t.me/{}".format(SUPPORT_CHAT),
                         )
-                    ]
+                    ],
                 ]
             ),
         )
@@ -357,25 +357,21 @@ def gethelp(update: Update, context: CallbackContext):
     query = update.callback_query
     if query.data == "gethelp_pr":
         query.bot.send_message(
-                    query.from_user.id,
-                    text=HELP_STRINGS,
-                    parse_mode=ParseMode.MARKDOWN,
-                    reply_markup=InlineKeyboardMarkup(
-                        paginate_modules(0, HELPABLE, "help")
-                    ),
-                )
+            query.from_user.id,
+            text=HELP_STRINGS,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=InlineKeyboardMarkup(paginate_modules(0, HELPABLE, "help")),
+        )
         query.message.edit_text(
-            text="I have sent you the requested information in a private message.", 
+            text="I have sent you the requested information in a private message.",
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
                         InlineKeyboardButton(
                             text="Go To The Chat",
                             url=f"telegram.me/{context.bot.username}",
-                            
                         )
                     ],
-                    
                 ]
             ),
         )
