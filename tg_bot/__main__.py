@@ -127,7 +127,7 @@ def send_help(chat_id, text, keyboard=None):
 
 
 def test(update: Update, _):
-    # pprint(eval(str(update)))
+    # pprint(ast.literal_eval(str(update)))
     # update.effective_message.reply_text("Hola tester! _I_ *have* `markdown`", parse_mode=ParseMode.MARKDOWN)
     update.effective_message.reply_text("This person edited a message")
     print(update.effective_message)
