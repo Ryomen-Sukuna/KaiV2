@@ -185,40 +185,38 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
 
     text += "\n"
     for mod in USER_INFO:
-        if mod.__mod_name__ == "Users":
-            continue
-
         try:
-            mod_info = mod.__user_info__(user.id)
+            mod_info = mod.__user_info__(user.id).strip()
         except TypeError:
-            mod_info = mod.__user_info__(user.id, chat.id)
+            mod_info = mod.__user_info__(user.id, chat.id).strip()
         if mod_info:
-            text += "\n" + mod_info
+            text += "\n\n" + mod_info
 
     if INFOPIC:
         try:
-            profile = bot.get_user_profile_photos(user.id).photos[0][-1]
+            profile = context.bot.get_user_profile_photos(user.id).photos[0][-1]
             _file = bot.get_file(profile["file_id"])
-
-            _file = _file.download(out=BytesIO())
-            _file.seek(0)
+            _file.download(f"{user.id}.png")
 
             message.reply_document(
-                document=_file,
+                document=open(f"{user.id}.png", "rb"),
                 caption=(text),
                 parse_mode=ParseMode.HTML,
             )
 
+            os.remove(f"{user.id}.png")
         # Incase user don't have profile pic, send normal text
         except IndexError:
             message.reply_text(
-                text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
+                text, parse_mode=ParseMode.HTML, disable_web_page_preview=True,
             )
 
     else:
         message.reply_text(
-            text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
+            text, parse_mode=ParseMode.HTML, disable_web_page_preview=True,
         )
+
+    rep.delete()
 
 
 def echo(update: Update):
