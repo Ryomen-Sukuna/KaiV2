@@ -53,26 +53,20 @@ def no_longer_afk(update: Update, _):
 
     if not user:  # ignore channels
         return
-
+        
+    if not is_afk(user.id) # check if user is afk or not
+        return
+        
+    time = humanize.naturaldelta(datetime.now() - user.time)
+    
     res = sql.rm_afk(user.id)
     if res:
         if message.new_chat_members:  # dont say msg
             return
         firstname = update.effective_user.first_name
         try:
-            options = [
-                "{} is here!",
-                "{} is back!",
-                "{} is now in the chat!",
-                "{} is awake!",
-                "{} is back online!",
-                "{} is finally here!",
-                "Welcome back! {}",
-                "Where is {}?\nIn the chat!",
-            ]
-            chosen_option = random.choice(options)
-            update.effective_message.reply_text(
-                chosen_option.format(firstname),
+            message.reply_text(
+                "Welcome back {}\nTime you away is: {}".format(firstname, time)
             )
         except:
             return
