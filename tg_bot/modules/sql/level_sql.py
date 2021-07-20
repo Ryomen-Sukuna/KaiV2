@@ -26,8 +26,7 @@ def is_level(user_id: int, role: str = None):
     with SESSION() as local_session:
         if role:
             return bool(local_session.query(Levels).get((user_id, role)))
-        else:
-            return bool(local_session.query(Levels).get(user_id))
+        return bool(local_session.query(Levels).get(user_id))
 
 
 def get_level_role(user_id: int):
@@ -42,8 +41,7 @@ def get_levels(role: str = None):
     with SESSION() as local_session:
         if not role:
             return local_session.query(Levels).all()
-        else:
-            return local_session.query(Levels).filter(Levels.role_name == role).all()
+        return local_session.query(Levels).filter(Levels.role_name == role).all()
 
 
 def set_level_role(user_id: int, role: str):
