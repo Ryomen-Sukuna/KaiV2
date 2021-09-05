@@ -192,7 +192,7 @@ def start(update: Update, context: CallbackContext):
                         [
                             InlineKeyboardButton(
                                 text="✯ Support Group ✯",
-                                url='https://t.me/zerounions',
+                                url="https://t.me/zerounions",
                             ),
                             InlineKeyboardButton(
                                 text="✫ Source Code ✫",

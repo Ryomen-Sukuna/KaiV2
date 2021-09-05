@@ -67,9 +67,7 @@ def get_id(update: Update, context: CallbackContext):
             )
 
     elif chat.type == "private":
-        msg.reply_text(
-            f"Your id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
-        )
+        msg.reply_text(f"Your id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML)
 
     else:
         msg.reply_text(
@@ -161,19 +159,19 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
         pass
 
     if user.id == OWNER_ID:
-        text += '\nThis person is my owner'
+        text += "\nThis person is my owner"
         Super_user_present = True
     elif user.id in DEV_USERS:
-        text += '\nThis Person is a part of Eagle Union'
+        text += "\nThis Person is a part of Eagle Union"
         Super_user_present = True
     elif user.id in SUDO_USERS:
-        text += '\nThe Nation level of this person is Royal'
+        text += "\nThe Nation level of this person is Royal"
         Super_user_present = True
     elif user.id in SUPPORT_USERS:
-        text += '\nThe Nation level of this person is Sakura'
+        text += "\nThe Nation level of this person is Sakura"
         Super_user_present = True
     elif user.id in WHITELIST_USERS:
-        text += '\nThe Nation level of this person is Neptunia'
+        text += "\nThe Nation level of this person is Neptunia"
         Super_user_present = True
 
     if Super_user_present:
