@@ -97,8 +97,9 @@ def import_data(update, context):
                 mod.__import_data__(str(chat.id), data)
         except Exception:
             msg.reply_text(
-                f"An error occurred while recovering your data. The process failed. If you experience a problem with this, please take it to @ironbloodnations",
+                'An error occurred while recovering your data. The process failed. If you experience a problem with this, please take it to @ironbloodnations'
             )
+
 
             log.exception(
                 "Imprt for the chat %s with the name %s failed.",
@@ -141,25 +142,20 @@ def export_data(update, context):
     jam = time.time()
     new_jam = jam + 10800
     checkchat = get_chat(chat_id, chat_data)
-    if checkchat.get("status"):
-        if jam <= int(checkchat.get("value")):
-            timeformatt = time.strftime(
-                "%H:%M:%S %d/%m/%Y",
-                time.localtime(checkchat.get("value")),
-            )
-            update.effective_message.reply_text(
-                "You can only backup once a day!\nYou can backup again in about `{}`".format(
-                    timeformatt,
-                ),
-                parse_mode=ParseMode.MARKDOWN,
-            )
-            return
-        if user.id != OWNER_ID:
-            put_chat(chat_id, new_jam, chat_data)
-    else:
-        if user.id != OWNER_ID:
-            put_chat(chat_id, new_jam, chat_data)
-
+    if checkchat.get("status") and jam <= int(checkchat.get("value")):
+        timeformatt = time.strftime(
+            "%H:%M:%S %d/%m/%Y",
+            time.localtime(checkchat.get("value")),
+        )
+        update.effective_message.reply_text(
+            "You can only backup once a day!\nYou can backup again in about `{}`".format(
+                timeformatt,
+            ),
+            parse_mode=ParseMode.MARKDOWN,
+        )
+        return
+    if user.id != OWNER_ID:
+        put_chat(chat_id, new_jam, chat_data)
     note_list = sql.get_all_chat_notes(chat_id)
     backup = {}
     # button = ""
