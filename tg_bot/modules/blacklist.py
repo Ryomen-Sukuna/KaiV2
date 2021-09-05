@@ -222,14 +222,10 @@ def blacklist_mode(update, context):
     chat_name = html.escape(chat_name)
 
     if args:
-        if (
-            args[0].lower() == "off"
-            or args[0].lower() == "nothing"
-            or args[0].lower() == "no"
-        ):
+        if args[0].lower() in ["off", "nothing", "no"]:
             settypeblacklist = "do nothing"
             sql.set_blacklist_strength(chat_id, 0, "0")
-        elif args[0].lower() == "del" or args[0].lower() == "delete":
+        elif args[0].lower() in ["del", "delete"]:
             settypeblacklist = "will delete blacklisted message"
             sql.set_blacklist_strength(chat_id, 1, "0")
         elif args[0].lower() == "warn":
@@ -415,9 +411,7 @@ def del_blacklist(update, context):
                     )
                     return
             except BadRequest as excp:
-                if excp.message == "Message to delete not found":
-                    pass
-                else:
+                if excp.message != "Message to delete not found":
                     log.exception("Error while deleting blacklist message.")
             break
 
