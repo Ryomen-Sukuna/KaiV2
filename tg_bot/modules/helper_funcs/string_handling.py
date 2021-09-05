@@ -105,9 +105,7 @@ def markdown_parser(
             ):
                 continue
             # TODO: investigate possible offset bug when lots of emoji are present
-            res += _selective_escape(txt[prev:start] or "") + escape_markdown(
-                ent_text
-            )
+            res += _selective_escape(txt[prev:start] or "") + escape_markdown(ent_text)
 
         # code handling
         elif ent.type == "code":
