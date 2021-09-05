@@ -66,17 +66,15 @@ def get_id(update: Update, context: CallbackContext):
                 parse_mode=ParseMode.HTML,
             )
 
+    elif chat.type == "private":
+        msg.reply_text(
+            f"Your id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
+        )
+
     else:
-
-        if chat.type == "private":
-            msg.reply_text(
-                f"Your id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
-            )
-
-        else:
-            msg.reply_text(
-                f"This group's id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
-            )
+        msg.reply_text(
+            f"This group's id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
+        )
 
 
 def gifid(update: Update, _):
@@ -163,19 +161,19 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
         pass
 
     if user.id == OWNER_ID:
-        text += f"\nThis person is my owner"
+        text += '\nThis person is my owner'
         Super_user_present = True
     elif user.id in DEV_USERS:
-        text += f"\nThis Person is a part of Eagle Union"
+        text += '\nThis Person is a part of Eagle Union'
         Super_user_present = True
     elif user.id in SUDO_USERS:
-        text += f"\nThe Nation level of this person is Royal"
+        text += '\nThe Nation level of this person is Royal'
         Super_user_present = True
     elif user.id in SUPPORT_USERS:
-        text += f"\nThe Nation level of this person is Sakura"
+        text += '\nThe Nation level of this person is Sakura'
         Super_user_present = True
     elif user.id in WHITELIST_USERS:
-        text += f"\nThe Nation level of this person is Neptunia"
+        text += '\nThe Nation level of this person is Neptunia'
         Super_user_present = True
 
     if Super_user_present:
@@ -312,7 +310,7 @@ def markdown_help(update: Update):
 
 def stats(update: Update):
     update.effective_message.reply_text(
-        "Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS])
+        "Current stats:\n" + "\n".join(mod.__stats__() for mod in STATS)
     )
 
 
