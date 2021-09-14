@@ -1,7 +1,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Repo Size](https://img.shields.io/github/repo-size/Ryomen-Sukuna/KaiV2)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
 [![Stars](https://img.shields.io/github/stars/Ryomen-Sukuna/KaiV2?style=social)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
-[![Maintained](https://img.shields.io/badge/Maintained-No-brightgreen)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
+[![Maintained](https://img.shields.io/badge/Maintained%3F-no-red.svg)](https://github.com/Ryomen-Sukuna/KaiV2 "KaiV2")
 [![CodeFactor](https://www.codefactor.io/repository/github/ryomen-sukuna/kaiv2/badge)](https://www.codefactor.io/repository/github/ryomen-sukuna/kaiv2)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/66392d405b804f7b9043c4803b7b4df9)](https://www.codacy.com/gh/Ryomen-Sukuna/KaiV2/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ryomen-Sukuna/KaiV2&amp;utm_campaign=Badge_Grade)
 
